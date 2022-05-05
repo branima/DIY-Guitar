@@ -149,7 +149,7 @@ public class Restauration : MonoBehaviour
         }
         else if (phase == 6)
         {
-            /*
+            
             finalDecorPanel.SetActive(false);
             CameraSwitch.Instance.ChangeCamera();
 
@@ -168,12 +168,12 @@ public class Restauration : MonoBehaviour
             customerOg.SetActive(false);
 
             Invoke("NextCustomer", 5f);
-            */
+            
 
-            
-            finalDecorPanel.SetActive(false);
-            showcasePanel.SetActive(true);
-            
+
+            //finalDecorPanel.SetActive(false);
+            //showcasePanel.SetActive(true);
+
         }
     }
 

@@ -41,6 +41,11 @@ namespace PaintIn3D
 		}
 #endif
 
+		///Manually added slot index change
+		public void SetSlotIndex(int x){
+			this.Index = x;
+		}
+
 		public Texture FindTexture(GameObject gameObject)
 		{
 			if (gameObject != null)

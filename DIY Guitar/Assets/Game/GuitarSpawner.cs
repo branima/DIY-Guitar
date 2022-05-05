@@ -23,7 +23,8 @@ public class GuitarSpawner : MonoBehaviour
     void Awake()
     {
         travel = false;
-        brush.Color = new Color(173f / 255f, 173f / 255f, 173f / 255f, 1f);
+        //brush.Color = new Color(173f / 255f, 173f / 255f, 173f / 255f, 1f);
+        brush.Color = Color.black;
     }
 
     // Update is called once per frame
