@@ -11,6 +11,10 @@ public class GuitarAttributes : MonoBehaviour
     public Vector3 cleaningRotation;
     public float cleaningSize;
 
+    public Vector3 dippingPosition;
+    public Vector3 dippingRotation;
+    public float dippingSize;
+
     public float fillBarScaler;
     public P3dChannelCounterFill fillScript;
 
@@ -44,5 +48,20 @@ public class GuitarAttributes : MonoBehaviour
     public float GetCleaningSize()
     {
         return cleaningSize;
+    }
+
+    public Vector3 GetDippingPosition()
+    {
+        return dippingPosition;
+    }
+
+    public Vector3 GetDippingRotation()
+    {
+        return dippingRotation;
+    }
+
+    public float GetDippingSize()
+    {
+        return dippingSize;
     }
 }

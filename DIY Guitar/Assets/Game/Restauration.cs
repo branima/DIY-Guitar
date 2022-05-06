@@ -17,6 +17,10 @@ public class Restauration : MonoBehaviour
     public Image cleaningProgress;
     public ParticleSystem starParticles;
 
+    public DipLogic dipLogic;
+    public GameObject dipBox;
+    public GameObject dipPanel;
+
     public GameObject sprayPanel;
     public GameObject sprayCan;
 
@@ -61,13 +65,48 @@ public class Restauration : MonoBehaviour
             {
                 cleaningBrush.SetActive(false);
                 mop.SetActive(false);
-                Invoke("SprayRestTime", 1f);
+                //Invoke("SprayRestTime", 1f); //Original
+                Invoke("DipTransition", 0.5f); //New
+                StartCoroutine(DelayedCameraChange(1f));
                 cleanPanel.SetActive(false);
                 starParticles.Play();
                 phase = 2;
-                CameraSwitch.Instance.ChangeCamera();
+                //CameraSwitch.Instance.ChangeCamera(); //Original
             }
         }
+    }
+
+    private IEnumerator DelayedCameraChange(float time){
+        yield return new WaitForSeconds(time);
+        CameraSwitch.Instance.ChangeCamera();
+    }
+
+    void DipTransition()
+    {
+        dipPanel.SetActive(true);
+        dipBox.SetActive(true);
+        GuitarAttributes ga = guitar.GetComponent<GuitarAttributes>();
+
+        guitar.transform.position = ga.GetDippingPosition();
+        guitar.transform.rotation = Quaternion.Euler(ga.GetDippingRotation());
+        guitar.transform.localScale = guitar.transform.localScale * ga.GetDippingSize();
+        DragAndDrop dad = guitar.AddComponent<DragAndDrop>();
+        dipLogic.dragAndDrop = dad;
+    }
+
+    public void DipReturn()
+    {
+        dipPanel.SetActive(false);
+        phase = 3;
+        NextPhase();
+
+        GuitarAttributes ga = guitar.GetComponent<GuitarAttributes>();
+
+        guitar.transform.position = ga.GetCleaningPosition();
+        guitar.transform.rotation = Quaternion.Euler(ga.GetCleaningRotation());
+        guitar.transform.localScale = guitar.transform.localScale / ga.GetDippingSize();
+        DragAndDrop dad = guitar.AddComponent<DragAndDrop>();
+        dipLogic.dragAndDrop = dad;
     }
 
     void SprayRestTime()
@@ -124,8 +163,12 @@ public class Restauration : MonoBehaviour
         {
             patternPanel.SetActive(false);
             stickerPanel.SetActive(true);
+
             foreach (GameObject pattern in patterns)
+            {
+                pattern.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = false;
                 pattern.SetActive(true);
+            }
 
         }
         else if (phase == 5)
@@ -149,7 +192,7 @@ public class Restauration : MonoBehaviour
         }
         else if (phase == 6)
         {
-            
+            /*
             finalDecorPanel.SetActive(false);
             CameraSwitch.Instance.ChangeCamera();
 
@@ -168,12 +211,11 @@ public class Restauration : MonoBehaviour
             customerOg.SetActive(false);
 
             Invoke("NextCustomer", 5f);
-            
+            */
 
 
-            //finalDecorPanel.SetActive(false);
-            //showcasePanel.SetActive(true);
-
+            finalDecorPanel.SetActive(false);
+            showcasePanel.SetActive(true);
         }
     }
 

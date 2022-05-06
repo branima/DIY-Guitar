@@ -26,6 +26,8 @@ public class FinalPartsLogic : MonoBehaviour
         transform.position = Vector3.MoveTowards(transform.position, targetPosition, Time.deltaTime * 3.5f);
         if (transform.position == targetPosition)
         {
+            if (targetPosition == awayTransform.position)
+                transform.gameObject.SetActive(false);
             travel = false;
             if (mop != null && brush != null && panel != null)
             {
@@ -59,8 +61,10 @@ public class FinalPartsLogic : MonoBehaviour
         if (transform.position == ogTransform.position)
             targetPosition = awayTransform.position;
         else
+        {
+            transform.gameObject.SetActive(true);
             targetPosition = ogTransform.position;
-
+        }
         travel = true;
     }
 }
