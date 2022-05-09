@@ -11,11 +11,15 @@ public class DragAndDrop : MonoBehaviour
     private float mZCord;
 
     bool directionDown;
-    
+
+    MeshRenderer dipMeshRenderer;
+    Material dipMat;
+    bool warp;
 
     void Awake(){
         guitar = gameObject;
         directionDown = true;
+        warp = false;
     }
 
     void OnMouseDown()
@@ -40,8 +44,20 @@ public class DragAndDrop : MonoBehaviour
         float y = move.y;
         float z = currPos.z;
         //Debug.Log(currPos.y - move.y);
-        if((directionDown && currPos.y - move.y > 0) || (!directionDown && currPos.y - move.y < 0))
+        if((directionDown && currPos.y - move.y > 0) || (!directionDown && currPos.y - move.y < 0)){
             guitar.transform.position = new Vector3(x, y, z);
+            if(warp){
+                float distance = Mathf.Abs(currPos.y - move.y);
+                float currAmmount = dipMat.GetFloat("WarpAmount");
+                dipMat.SetFloat("WarpAmount", currAmmount + distance);
+            }
+        }
+    }
+
+    public void StartWapring(MeshRenderer dipMeshRenderer){ 
+        this.dipMeshRenderer = dipMeshRenderer;
+        dipMat = dipMeshRenderer.material;
+        warp = true;
     }
 
     public void SwitchDirection(){

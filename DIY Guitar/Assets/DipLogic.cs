@@ -16,10 +16,18 @@ public class DipLogic : MonoBehaviour
 
     public ParticleSystem starParticles;
 
+    bool dipWarping;
+
+    public GameObject dragDownText;
+    public GameObject dragUpText;
+    
+
     // Start is called before the first frame update
     void Start()
     {
-        dipTexture = GetComponent<MeshRenderer>().material.mainTexture;
+        //dipTexture = GetComponent<MeshRenderer>().material.mainTexture;
+        dipTexture = GetComponent<MeshRenderer>().material.GetTexture("DipTexture");
+        dipWarping = false;
     }
 
     // Update is called once per frame
@@ -38,12 +46,21 @@ public class DipLogic : MonoBehaviour
             other.transform.parent.GetChild(other.transform.GetSiblingIndex() + 1).gameObject.SetActive(true);
             other.gameObject.SetActive(false);
             dipBrush.SetActive(false);
+            dragDownText.SetActive(false);
+            dragUpText.SetActive(true);
         }
         else if (other.name == "OutDetector")
         {
-            Destroy(dragAndDrop);
-            starParticles.Play();
-            Invoke("StickeringPreparation", 1f);
+            if (dipWarping)
+            {
+                Destroy(dragAndDrop);
+                starParticles.Play();
+                Invoke("StickeringPreparation", 1f);
+            }
+            else{
+                dragAndDrop.StartWapring(GetComponent<MeshRenderer>());
+                dipWarping = true;
+            }
         }
     }
 

@@ -66,8 +66,8 @@ public class Restauration : MonoBehaviour
                 cleaningBrush.SetActive(false);
                 mop.SetActive(false);
                 //Invoke("SprayRestTime", 1f); //Original
-                Invoke("DipTransition", 0.5f); //New
-                StartCoroutine(DelayedCameraChange(1f));
+                //Invoke("DipTransition", 0.5f); //New
+                StartCoroutine(DipSelectionTransition(1f));
                 cleanPanel.SetActive(false);
                 starParticles.Play();
                 phase = 2;
@@ -76,15 +76,21 @@ public class Restauration : MonoBehaviour
         }
     }
 
-    private IEnumerator DelayedCameraChange(float time){
+    private IEnumerator DipSelectionTransition(float time)
+    {
         yield return new WaitForSeconds(time);
         CameraSwitch.Instance.ChangeCamera();
-    }
 
-    void DipTransition()
-    {
         dipPanel.SetActive(true);
         dipBox.SetActive(true);
+    }
+
+    public void DipTransition()
+    {
+        /*
+        dipPanel.SetActive(true);
+        dipBox.SetActive(true);
+        */
         GuitarAttributes ga = guitar.GetComponent<GuitarAttributes>();
 
         guitar.transform.position = ga.GetDippingPosition();

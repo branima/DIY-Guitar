@@ -12,22 +12,30 @@ public class DipSelection : MonoBehaviour
     public Material dipWaterMat;
     public MeshRenderer dipWaterMR;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public GameObject dipInstructionsDown;
+    public Restauration restauration;
 
-    // Update is called once per frame
-    void Update()
+    public void SelectDip(int idx)
     {
-        
-    }
-
-    public void SelectDip(int idx){
         Texture selectedTexture = dipTextures[idx];
-        dipWaterMR.material.mainTexture = selectedTexture;
-        dipWaterMat.mainTexture = selectedTexture;
+        //dipWaterMR.material.mainTexture = selectedTexture;
+        //dipWaterMat.mainTexture = selectedTexture;
+        dipWaterMR.material.SetTexture("DipTexture", selectedTexture);
+        //dipWaterMat.mainTexture = selectedTexture;
         dipBrush.Texture = selectedTexture;
+    }
+
+    public void ConfirmDipPattern(GameObject scrollview)
+    {
+        Invoke("ShowInstructions", 1f);
+        //dipInstructionsDown.SetActive(true);
+        scrollview.SetActive(false);
+        CameraSwitch.Instance.ChangeCamera();
+        restauration.DipTransition();
+    }
+
+    private void ShowInstructions()
+    {
+        dipInstructionsDown.SetActive(true);
     }
 }
