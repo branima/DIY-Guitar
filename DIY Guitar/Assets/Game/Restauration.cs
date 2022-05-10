@@ -7,6 +7,8 @@ using TMPro;
 
 public class Restauration : MonoBehaviour
 {
+    public Transform cameraPositions;
+
     public GameObject cleaningBrush;
     public GameObject paintingBrush;
     GameObject guitar;
@@ -20,6 +22,7 @@ public class Restauration : MonoBehaviour
     public DipLogic dipLogic;
     public GameObject dipBox;
     public GameObject dipPanel;
+
 
     public GameObject sprayPanel;
     public GameObject sprayCan;
@@ -44,6 +47,8 @@ public class Restauration : MonoBehaviour
 
     int phase; /// 1 - Cleaning, 2 - Spraying, 3 - Pattern, 4 - Stickers, 5 - Final Decorations, 6 - Showcase
 
+    int paintingMode; /// 0 - Spraying, 1 - Dipping
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -52,6 +57,7 @@ public class Restauration : MonoBehaviour
         phase = 0;
         gameManager = GetComponent<GameManager>();
         activePattern = null;
+        paintingMode = 1;
     }
 
     // Update is called once per frame
@@ -65,13 +71,18 @@ public class Restauration : MonoBehaviour
             {
                 cleaningBrush.SetActive(false);
                 mop.SetActive(false);
-                //Invoke("SprayRestTime", 1f); //Original
-                //Invoke("DipTransition", 0.5f); //New
-                StartCoroutine(DipSelectionTransition(1f));
+                if (paintingMode == 0)
+                {
+                    Invoke("SprayRestTime", 1f);
+                    CameraSwitch.Instance.ChangeCamera();
+                }
+                else if (paintingMode == 1)
+                {
+                    StartCoroutine(DipSelectionTransition(1f));
+                }
                 cleanPanel.SetActive(false);
                 starParticles.Play();
                 phase = 2;
-                //CameraSwitch.Instance.ChangeCamera(); //Original
             }
         }
     }
@@ -103,6 +114,7 @@ public class Restauration : MonoBehaviour
     public void DipReturn()
     {
         dipPanel.SetActive(false);
+        dipBox.SetActive(false);
         phase = 3;
         NextPhase();
 
@@ -131,6 +143,8 @@ public class Restauration : MonoBehaviour
         mop.SetActive(true);
         finalParts = guitar.GetComponentInChildren<FinalPartsLogic>();
         finalParts.Travel(mop, cleaningBrush, cleanPanel);
+        GuitarAttributes ga = guitar.GetComponent<GuitarAttributes>();
+        paintingMode = ga.paintingMode;
     }
 
     public void BackToSpraying(SinglePatternLogic spl)
@@ -198,7 +212,7 @@ public class Restauration : MonoBehaviour
         }
         else if (phase == 6)
         {
-            /*
+            ///PLAYING SHOWCASE
             finalDecorPanel.SetActive(false);
             CameraSwitch.Instance.ChangeCamera();
 
@@ -217,20 +231,25 @@ public class Restauration : MonoBehaviour
             customerOg.SetActive(false);
 
             Invoke("NextCustomer", 5f);
-            */
+            
 
-
-            finalDecorPanel.SetActive(false);
-            showcasePanel.SetActive(true);
+            ///GRAPHIC SHOWCASE FOR ADS
+            //finalDecorPanel.SetActive(false);
+            //showcasePanel.SetActive(true);
         }
     }
 
     void NextCustomer()
     {
-        foreach (GameObject pattern in patterns)
+        foreach (GameObject pattern in patterns){
+            pattern.GetComponentInChildren<MeshRenderer>().enabled = true;
             pattern.SetActive(false);
+        }
 
         CameraSwitch.Instance.ChangeCamera();
+        foreach (Transform camPosition in cameraPositions)
+            camPosition.gameObject.SetActive(false);
+
         phase = 0;
         cleaningProgress.fillAmount = 0f;
         gameManager.NextCustomer();

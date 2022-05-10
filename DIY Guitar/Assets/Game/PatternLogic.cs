@@ -37,6 +37,7 @@ public class PatternLogic : MonoBehaviour
         {
             if (child.tag != name)
             {
+                //Debug.Log(child.tag + ", " + name);
                 child.gameObject.SetActive(false);
             }
         }

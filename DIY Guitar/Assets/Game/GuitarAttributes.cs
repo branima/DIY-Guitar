@@ -23,6 +23,12 @@ public class GuitarAttributes : MonoBehaviour
     public float propsAndBrushesModifier;
 
     public string guitarType;
+    public int paintingMode;
+
+    void Awake(){
+        Transform camPositions = GameObject.FindGameObjectWithTag("camPositions").transform;
+        camPositions.GetChild(paintingMode).gameObject.SetActive(true);
+    }
 
     void Start()
     {

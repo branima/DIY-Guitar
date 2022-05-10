@@ -9,6 +9,8 @@ TagManager:
   - chuck
   - ukulele
   - acoustic
+  - camPositions
+  - hetfield
   layers:
   - Default
   - TransparentFX
