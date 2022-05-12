@@ -7,6 +7,9 @@ using TMPro;
 
 public class Restauration : MonoBehaviour
 {
+
+    public bool videoAdMode;
+
     public Transform cameraPositions;
 
     public GameObject cleaningBrush;
@@ -83,6 +86,13 @@ public class Restauration : MonoBehaviour
                 cleanPanel.SetActive(false);
                 starParticles.Play();
                 phase = 2;
+
+                foreach (GameObject pattern in patterns)
+                {
+                    pattern.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = true;
+                    pattern.SetActive(true);
+                    pattern.SetActive(false);
+                }
             }
         }
     }
@@ -212,36 +222,40 @@ public class Restauration : MonoBehaviour
         }
         else if (phase == 6)
         {
-            ///PLAYING SHOWCASE
-            finalDecorPanel.SetActive(false);
-            CameraSwitch.Instance.ChangeCamera();
+            if (!videoAdMode)
+            {
+                finalDecorPanel.SetActive(false);
+                CameraSwitch.Instance.ChangeCamera();
 
-            GuitarAttributes ga = guitar.GetComponent<GuitarAttributes>();
-            ga.ResetBrushesAndProps();
+                GuitarAttributes ga = guitar.GetComponent<GuitarAttributes>();
+                ga.ResetBrushesAndProps();
 
-            playingCustomerRig = gameManager.NextPlayingCustomer().GetChild(0).gameObject;
-            playingCustomerRig.transform.parent.gameObject.SetActive(true);
-            Transform guitarPos = playingCustomerRig.transform.GetChild(0);
-            Transform customer = playingCustomerRig.transform;
-            guitar.transform.position = guitarPos.position;
-            guitar.transform.rotation = guitarPos.rotation;
-            guitar.transform.localScale = guitar.transform.localScale / ga.cleaningSize;
-            guitar.transform.parent = customer;
-            GameObject customerOg = gameManager.GetCurrentCustomer();
-            customerOg.SetActive(false);
+                playingCustomerRig = gameManager.NextPlayingCustomer().GetChild(0).gameObject;
+                playingCustomerRig.transform.parent.gameObject.SetActive(true);
+                Transform guitarPos = playingCustomerRig.transform.GetChild(0);
+                Transform customer = playingCustomerRig.transform;
+                guitar.transform.position = guitarPos.position;
+                guitar.transform.rotation = guitarPos.rotation;
+                guitar.transform.localScale = guitar.transform.localScale / ga.cleaningSize;
+                guitar.transform.parent = customer;
+                GameObject customerOg = gameManager.GetCurrentCustomer();
+                customerOg.SetActive(false);
 
-            Invoke("NextCustomer", 5f);
-            
+                Invoke("NextCustomer", 5f);
+            }
+            else
+            {
+                finalDecorPanel.SetActive(false);
+                showcasePanel.SetActive(true);
 
-            ///GRAPHIC SHOWCASE FOR ADS
-            //finalDecorPanel.SetActive(false);
-            //showcasePanel.SetActive(true);
+            }
         }
     }
 
     void NextCustomer()
     {
-        foreach (GameObject pattern in patterns){
+        foreach (GameObject pattern in patterns)
+        {
             pattern.GetComponentInChildren<MeshRenderer>().enabled = true;
             pattern.SetActive(false);
         }

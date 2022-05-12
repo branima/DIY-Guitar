@@ -55,7 +55,7 @@ public class DipLogic : MonoBehaviour
             {
                 Destroy(dragAndDrop);
                 starParticles.Play();
-                Invoke("StickeringPreparation", 0.1f);
+                Invoke("StickeringPreparation", 0.5f);
             }
             else{
                 dragAndDrop.StartWapring(GetComponent<MeshRenderer>());

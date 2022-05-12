@@ -20,7 +20,7 @@ public class PatternLogic : MonoBehaviour
 
     public void HighlightButton(Transform button)
     {
-        if (oldButton != null)
+        if (oldButton != null && oldButton.childCount > 1)
         {
             oldButton.GetChild(1).gameObject.SetActive(false);
         }

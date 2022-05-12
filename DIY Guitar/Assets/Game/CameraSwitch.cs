@@ -19,6 +19,12 @@ public class CameraSwitch : MonoBehaviour
     {
         Instance = this;
     }
+
+    void OnEnable()
+    {
+        Instance = this;
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -48,6 +54,7 @@ public class CameraSwitch : MonoBehaviour
 
     public void ChangeCamera()
     {
+        //UnityEngine.Debug.Log(transform.name + ", " + currActive);
         //string callingFuncName = new StackFrame(1).GetMethod().Name;
         //UnityEngine.Debug.Log(callingFuncName);
         reposition = true;
