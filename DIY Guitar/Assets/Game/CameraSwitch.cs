@@ -18,6 +18,11 @@ public class CameraSwitch : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+        cam = Camera.main.transform;
+        currActive = 0;
+        currActiveTransform = transform.GetChild(currActive);
+        reposition = false;
+        repoTime = 0f;
     }
 
     void OnEnable()
@@ -28,11 +33,7 @@ public class CameraSwitch : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        cam = Camera.main.transform;
-        currActive = 0;
-        currActiveTransform = transform.GetChild(currActive);
-        reposition = false;
-        repoTime = 0f;
+
     }
 
     void Update()

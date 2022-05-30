@@ -32,8 +32,16 @@ public class GuitarAttributes : MonoBehaviour
 
     void Start()
     {
+        //fillScript.fillBarScaler = fillBarScaler;
+        //brushesAndProps.ScaleBrushesAndProps(propsAndBrushesModifier);
+    }
+
+    public void ScaleFillBar(){
         fillScript.fillBarScaler = fillBarScaler;
-        brushesAndProps.ScaleBrushesAndProps(propsAndBrushesModifier);
+    }
+
+    public void ScaleBrushesAndProps(){
+         brushesAndProps.ScaleBrushesAndProps(propsAndBrushesModifier);
     }
 
     public void ResetBrushesAndProps()

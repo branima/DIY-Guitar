@@ -77,7 +77,8 @@ public class Restauration : MonoBehaviour
                 if (paintingMode == 0)
                 {
                     Invoke("SprayRestTime", 1f);
-                    CameraSwitch.Instance.ChangeCamera();
+                    if (gameManager.isRestauration)
+                        CameraSwitch.Instance.ChangeCamera();
                 }
                 else if (paintingMode == 1)
                 {
@@ -145,16 +146,25 @@ public class Restauration : MonoBehaviour
         sprayCan.SetActive(true);
     }
 
-    public void StartCleaning(GameObject guitar)
+    public void StartCleaning(GameObject guitar, bool isDirty)
     {
         phase = 1;
         this.guitar = guitar;
-        cleaningBrush.SetActive(true);
-        mop.SetActive(true);
         finalParts = guitar.GetComponentInChildren<FinalPartsLogic>();
-        finalParts.Travel(mop, cleaningBrush, cleanPanel);
         GuitarAttributes ga = guitar.GetComponent<GuitarAttributes>();
         paintingMode = ga.paintingMode;
+        if (isDirty)
+        {
+            cleaningBrush.SetActive(true);
+            mop.SetActive(true);
+            finalParts.Travel(mop, cleaningBrush, cleanPanel);
+        }
+        else
+        {
+            finalParts.Travel(null, null, null);
+            cleaningProgress.fillAmount = 1f;
+        }
+
     }
 
     public void BackToSpraying(SinglePatternLogic spl)

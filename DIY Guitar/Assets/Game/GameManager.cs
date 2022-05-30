@@ -8,6 +8,8 @@ public class GameManager : MonoBehaviour
 
     int numberOfLevels = 2;
 
+    public bool isRestauration;
+
     public Transform customers;
     GameObject currCustomer;
 
@@ -18,10 +20,21 @@ public class GameManager : MonoBehaviour
 
     public GuitarSpawner guitarSpawner;
 
+    ///GUITARS FROM SCRATCH SYSTEM
+    public GameObject shapeSelectionPanel;
+
     // Start is called before the first frame update
     void Start()
     {
-        NextCustomer();
+        if (isRestauration)
+            NextCustomer();
+        else
+        {
+            CameraSwitch.Instance.ChangeCamera();
+            CameraSwitch.Instance.ChangeCamera();
+
+            shapeSelectionPanel.SetActive(true);
+        }
 
         ///AD-ONLY PART
         /*
