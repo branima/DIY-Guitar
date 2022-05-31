@@ -52,6 +52,10 @@ public class Restauration : MonoBehaviour
 
     int paintingMode; /// 0 - Spraying, 1 - Dipping
 
+    public GlobalProgressBarLogic globalProgressBar;
+
+    bool patternDeployed;
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -61,6 +65,7 @@ public class Restauration : MonoBehaviour
         gameManager = GetComponent<GameManager>();
         activePattern = null;
         paintingMode = 1;
+        patternDeployed = false;
     }
 
     // Update is called once per frame
@@ -87,6 +92,8 @@ public class Restauration : MonoBehaviour
                 cleanPanel.SetActive(false);
                 starParticles.Play();
                 phase = 2;
+
+                globalProgressBar.ShowNextStep();
 
                 foreach (GameObject pattern in patterns)
                 {
@@ -148,6 +155,7 @@ public class Restauration : MonoBehaviour
 
     public void StartCleaning(GameObject guitar, bool isDirty)
     {
+        globalProgressBar.gameObject.SetActive(true);
         phase = 1;
         this.guitar = guitar;
         finalParts = guitar.GetComponentInChildren<FinalPartsLogic>();
@@ -187,7 +195,17 @@ public class Restauration : MonoBehaviour
         }
 
         phase++;
-
+        if (phase != 6)
+            globalProgressBar.ShowNextStep();
+        if (patternDeployed && phase == 3)
+        {
+            paintingBrush.SetActive(false);
+            sprayPanel.SetActive(false);
+            sprayCan.SetActive(false);
+            if (activePattern != null)
+                activePattern.Travel();
+            phase++;
+        }
         if (phase == 3)
         {
             paintingBrush.SetActive(false);
@@ -197,7 +215,7 @@ public class Restauration : MonoBehaviour
             if (activePattern != null)
                 activePattern.Travel();
             activePattern = null;
-
+            patternDeployed = true;
         }
         else if (phase == 4)
         {
@@ -232,6 +250,7 @@ public class Restauration : MonoBehaviour
         }
         else if (phase == 6)
         {
+            globalProgressBar.gameObject.SetActive(false);
             if (!videoAdMode)
             {
                 finalDecorPanel.SetActive(false);
@@ -280,5 +299,6 @@ public class Restauration : MonoBehaviour
         customerNum++;
         levelText.text = "LEVEL " + customerNum;
         levelText.gameObject.SetActive(true);
+        patternDeployed = false;
     }
 }

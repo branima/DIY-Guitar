@@ -16,7 +16,7 @@ public class PatternLogic : MonoBehaviour
         SinglePatternLogic spl = pattern.GetComponent<SinglePatternLogic>();
         spl.Travel();
         restauration.BackToSpraying(spl);
-    }
+        }
 
     public void HighlightButton(Transform button)
     {
