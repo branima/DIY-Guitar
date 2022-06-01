@@ -11,33 +11,20 @@ public class GuitarAttributes : MonoBehaviour
     public Vector3 cleaningRotation;
     public float cleaningSize;
 
-    public Vector3 dippingPosition;
-    public Vector3 dippingRotation;
-    public float dippingSize;
-
-    public float fillBarScaler;
-    public P3dChannelCounterFill fillScript;
-
     public BrushesAndPropsLogic brushesAndProps;
 
     public float propsAndBrushesModifier;
 
     public string guitarType;
-    public int paintingMode;
 
     void Awake(){
         Transform camPositions = GameObject.FindGameObjectWithTag("camPositions").transform;
-        camPositions.GetChild(paintingMode).gameObject.SetActive(true);
     }
 
     void Start()
     {
         //fillScript.fillBarScaler = fillBarScaler;
         //brushesAndProps.ScaleBrushesAndProps(propsAndBrushesModifier);
-    }
-
-    public void ScaleFillBar(){
-        fillScript.fillBarScaler = fillBarScaler;
     }
 
     public void ScaleBrushesAndProps(){
@@ -62,20 +49,5 @@ public class GuitarAttributes : MonoBehaviour
     public float GetCleaningSize()
     {
         return cleaningSize;
-    }
-
-    public Vector3 GetDippingPosition()
-    {
-        return dippingPosition;
-    }
-
-    public Vector3 GetDippingRotation()
-    {
-        return dippingRotation;
-    }
-
-    public float GetDippingSize()
-    {
-        return dippingSize;
     }
 }

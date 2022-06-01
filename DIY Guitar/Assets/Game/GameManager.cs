@@ -8,8 +8,6 @@ public class GameManager : MonoBehaviour
 
     int numberOfLevels = 2;
 
-    public bool isRestauration;
-
     public Transform customers;
     GameObject currCustomer;
 
@@ -18,30 +16,12 @@ public class GameManager : MonoBehaviour
 
     public GameObject tapToPlayMessage;
 
-    public GuitarSpawner guitarSpawner;
-
-    ///GUITARS FROM SCRATCH SYSTEM
-    public GameObject shapeSelectionPanel;
+    public GameObject guitarShapeSelectionPanel;
 
     // Start is called before the first frame update
     void Start()
     {
-        if (isRestauration)
-            NextCustomer();
-        else
-        {
-            CameraSwitch.Instance.ChangeCamera();
-            CameraSwitch.Instance.ChangeCamera();
-
-            shapeSelectionPanel.SetActive(true);
-        }
-
-        ///AD-ONLY PART
-        /*
-        GameObject guitar = GetCurrentCustomer().transform.GetChild(0).gameObject;
-        guitar.transform.parent.gameObject.SetActive(false);
-        guitarSpawner.SpawnGuitar(guitar);
-        */
+        NextCustomer();
     }
 
     public void NextCustomer()
@@ -75,6 +55,13 @@ public class GameManager : MonoBehaviour
         return currCustomer;
     }
 
+    public void BeginGuitar()
+    {
+        CameraSwitch.Instance.ChangeCamera();
+        guitarShapeSelectionPanel.SetActive(true);
+    }
+
+    ///TECHNICAL PART
     public void NextLevel()
     {
         LoadLevel((SceneManager.GetActiveScene().buildIndex + 1) % numberOfLevels);

@@ -8,24 +8,16 @@ using TMPro;
 public class Restauration : MonoBehaviour
 {
 
+    GameManager gameManager;
+
     public bool videoAdMode;
 
     public Transform cameraPositions;
 
-    public GameObject cleaningBrush;
     public GameObject paintingBrush;
     GameObject guitar;
-    GameManager gameManager;
 
-    public GameObject cleanPanel;
-    public GameObject mop;
-    public Image cleaningProgress;
-    public ParticleSystem starParticles;
-
-    public DipLogic dipLogic;
-    public GameObject dipBox;
-    public GameObject dipPanel;
-
+    public GameObject guitarShapeSelectionPanel;
 
     public GameObject sprayPanel;
     public GameObject sprayCan;
@@ -43,14 +35,8 @@ public class Restauration : MonoBehaviour
 
     public GameObject showcasePanel;
     GameObject playingCustomerRig;
-    //public Transform guitarShowcasePosition;
 
-    int customerNum;
-    public TextMeshProUGUI levelText;
-
-    int phase; /// 1 - Cleaning, 2 - Spraying, 3 - Pattern, 4 - Stickers, 5 - Final Decorations, 6 - Showcase
-
-    int paintingMode; /// 0 - Spraying, 1 - Dipping
+    int phase; /// 1 - Spraying, 2 - Pattern, 3 - Stickers, 4 - Final Decorations, 5 - Showcase
 
     public GlobalProgressBarLogic globalProgressBar;
 
@@ -59,120 +45,33 @@ public class Restauration : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
-        customerNum = 1;
-        levelText.text = "LEVEL 1";
-        phase = 0;
         gameManager = GetComponent<GameManager>();
+        phase = 0;
         activePattern = null;
-        paintingMode = 1;
         patternDeployed = false;
     }
 
-    // Update is called once per frame
-    void Update()
+    public void StartPainting(GameObject guitar)
     {
-        //Debug.Log(phase);
-        if (phase == 1)
-        {
-            //Debug.Log(cleaningProgress.fillAmount);
-            if (cleaningProgress.fillAmount >= 1f)
-            {
-                cleaningBrush.SetActive(false);
-                mop.SetActive(false);
-                if (paintingMode == 0)
-                {
-                    Invoke("SprayRestTime", 1f);
-                    if (gameManager.isRestauration)
-                        CameraSwitch.Instance.ChangeCamera();
-                }
-                else if (paintingMode == 1)
-                {
-                    StartCoroutine(DipSelectionTransition(1f));
-                }
-                cleanPanel.SetActive(false);
-                starParticles.Play();
-                phase = 2;
-
-                globalProgressBar.ShowNextStep();
-
-                foreach (GameObject pattern in patterns)
-                {
-                    pattern.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = true;
-                    pattern.SetActive(true);
-                    pattern.SetActive(false);
-                }
-            }
-        }
-    }
-
-    private IEnumerator DipSelectionTransition(float time)
-    {
-        yield return new WaitForSeconds(time);
-        CameraSwitch.Instance.ChangeCamera();
-
-        dipPanel.SetActive(true);
-        dipBox.SetActive(true);
-    }
-
-    public void DipTransition()
-    {
-        /*
-        dipPanel.SetActive(true);
-        dipBox.SetActive(true);
-        */
-        GuitarAttributes ga = guitar.GetComponent<GuitarAttributes>();
-
-        guitar.transform.position = ga.GetDippingPosition();
-        guitar.transform.rotation = Quaternion.Euler(ga.GetDippingRotation());
-        guitar.transform.localScale = guitar.transform.localScale * ga.GetDippingSize();
-        DragAndDrop dad = guitar.AddComponent<DragAndDrop>();
-        dipLogic.dragAndDrop = dad;
-    }
-
-    public void DipReturn()
-    {
-        dipPanel.SetActive(false);
-        dipBox.SetActive(false);
-        phase = 3;
-        NextPhase();
-
-        GuitarAttributes ga = guitar.GetComponent<GuitarAttributes>();
-
-        guitar.transform.position = ga.GetCleaningPosition();
-        guitar.transform.rotation = Quaternion.Euler(ga.GetCleaningRotation());
-        guitar.transform.localScale = guitar.transform.localScale / ga.GetDippingSize();
-        DragAndDrop dad = guitar.AddComponent<DragAndDrop>();
-        dipLogic.dragAndDrop = dad;
-    }
-
-    void SprayRestTime()
-    {
-        sprayPanel.SetActive(true);
-        cleaningBrush.GetComponent<P3dHitScreen>().ClearHitCache();
-        paintingBrush.SetActive(true);
-        sprayCan.SetActive(true);
-    }
-
-    public void StartCleaning(GameObject guitar, bool isDirty)
-    {
+        guitarShapeSelectionPanel.SetActive(false);
         globalProgressBar.gameObject.SetActive(true);
         phase = 1;
         this.guitar = guitar;
         finalParts = guitar.GetComponentInChildren<FinalPartsLogic>();
-        GuitarAttributes ga = guitar.GetComponent<GuitarAttributes>();
-        paintingMode = ga.paintingMode;
-        if (isDirty)
-        {
-            cleaningBrush.SetActive(true);
-            mop.SetActive(true);
-            finalParts.Travel(mop, cleaningBrush, cleanPanel);
-        }
-        else
-        {
-            finalParts.Travel(null, null, null);
-            cleaningProgress.fillAmount = 1f;
-        }
 
+        finalParts.Travel(null, null, null);
+
+        sprayPanel.SetActive(true);
+        paintingBrush.SetActive(true);
+        sprayCan.SetActive(true);
+        globalProgressBar.ShowNextStep();
+
+        foreach (GameObject pattern in patterns)
+        {
+            pattern.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = true;
+            pattern.SetActive(true);
+            pattern.SetActive(false);
+        }
     }
 
     public void BackToSpraying(SinglePatternLogic spl)
@@ -187,7 +86,7 @@ public class Restauration : MonoBehaviour
 
     public void NextPhase()
     {
-        if (phase == 2 && activePattern != null && activePattern.nextInChain != null)
+        if (phase == 1 && activePattern != null && activePattern.nextInChain != null)
         {
             activePattern.Travel();
             activePattern = activePattern.nextInChain;
@@ -195,9 +94,9 @@ public class Restauration : MonoBehaviour
         }
 
         phase++;
-        if (phase != 6)
+        if (phase != 5)
             globalProgressBar.ShowNextStep();
-        if (patternDeployed && phase == 3)
+        if (patternDeployed && phase == 2)
         {
             paintingBrush.SetActive(false);
             sprayPanel.SetActive(false);
@@ -206,7 +105,7 @@ public class Restauration : MonoBehaviour
                 activePattern.Travel();
             phase++;
         }
-        if (phase == 3)
+        if (phase == 2)
         {
             paintingBrush.SetActive(false);
             sprayPanel.SetActive(false);
@@ -217,7 +116,7 @@ public class Restauration : MonoBehaviour
             activePattern = null;
             patternDeployed = true;
         }
-        else if (phase == 4)
+        else if (phase == 3)
         {
             patternPanel.SetActive(false);
             stickerPanel.SetActive(true);
@@ -229,7 +128,7 @@ public class Restauration : MonoBehaviour
             }
 
         }
-        else if (phase == 5)
+        else if (phase == 4)
         {
             stickerPanel.SetActive(false);
             stickerBrush.SetActive(false);
@@ -238,17 +137,8 @@ public class Restauration : MonoBehaviour
             fdc.paintables = finalParts.transform.GetChild(0);
             finalDecorPanel.SetActive(true);
             finalParts.Travel(null, null, null);
-
-            /*
-            Transform customer = gameManager.GetCurrentCustomer().transform;
-            Transform guitarPos = customer.GetChild(0);
-            guitar.transform.position = guitarPos.position;
-            guitar.transform.rotation = guitarPos.rotation;
-            guitar.transform.localScale = guitar.transform.localScale / 1.5f;
-            guitar.transform.parent = customer;
-            */
         }
-        else if (phase == 6)
+        else if (phase == 5)
         {
             globalProgressBar.gameObject.SetActive(false);
             if (!videoAdMode)
@@ -290,15 +180,9 @@ public class Restauration : MonoBehaviour
         }
 
         CameraSwitch.Instance.ChangeCamera();
-        foreach (Transform camPosition in cameraPositions)
-            camPosition.gameObject.SetActive(false);
-
+       
         phase = 0;
-        cleaningProgress.fillAmount = 0f;
         gameManager.NextCustomer();
-        customerNum++;
-        levelText.text = "LEVEL " + customerNum;
-        levelText.gameObject.SetActive(true);
         patternDeployed = false;
     }
 }

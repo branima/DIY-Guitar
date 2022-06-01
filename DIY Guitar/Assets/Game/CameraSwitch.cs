@@ -30,12 +30,6 @@ public class CameraSwitch : MonoBehaviour
         Instance = this;
     }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
     void Update()
     {
         if (reposition)
@@ -58,12 +52,12 @@ public class CameraSwitch : MonoBehaviour
         //UnityEngine.Debug.Log(transform.name + ", " + currActive);
         //string callingFuncName = new StackFrame(1).GetMethod().Name;
         //UnityEngine.Debug.Log(callingFuncName);
-        reposition = true;
-        repoTime = 0f;
         currActive++;
         if (currActive == transform.childCount)
             currActive = 0;
         //UnityEngine.Debug.Log(currActive);
         currActiveTransform = transform.GetChild(currActive);
+        reposition = true;
+        repoTime = 0f;
     }
 }
