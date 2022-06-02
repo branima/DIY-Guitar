@@ -2,22 +2,7 @@ fileFormatVersion: 2
 guid: 0e210533989f0ae4fad0c6ee62798e41
 ModelImporter:
   serializedVersion: 20101
-  internalIDToNameTable:
-  - first:
-      74: -4415280402834211514
-    second: rig|BigBodyAction
-  - first:
-      74: -712503767160152374
-    second: rig|HoldingWalking
-  - first:
-      74: -3212345770626467570
-    second: rig|HoldingWalking.001
-  - first:
-      74: 7990984418318389023
-    second: rig|HoldingWalking.002
-  - first:
-      74: 1599155768152908184
-    second: rig|idle
+  internalIDToNameTable: []
   externalObjects: {}
   materials:
     materialImportMode: 1
