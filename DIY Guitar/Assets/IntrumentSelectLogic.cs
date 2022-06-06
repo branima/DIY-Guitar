@@ -21,10 +21,12 @@ public class IntrumentSelectLogic : MonoBehaviour
         }
         else if (name == "drums")
         {
+            gameManager.BeginDrums();
             gameObject.SetActive(false);
         }
         else if (name == "keyboard")
         {
+            gameManager.BeginKeyboard();
             gameObject.SetActive(false);
         }
         else

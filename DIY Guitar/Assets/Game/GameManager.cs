@@ -18,9 +18,16 @@ public class GameManager : MonoBehaviour
 
     public GameObject guitarShapeSelectionPanel;
 
+    public GameObject guitarSegment;
+    public GameObject drumsSegment;
+
+    public Transform cameraPositions;
+    int cameraPositionsIdx;
+
     // Start is called before the first frame update
     void Start()
     {
+        cameraPositionsIdx = 0;
         NextCustomer();
     }
 
@@ -55,10 +62,31 @@ public class GameManager : MonoBehaviour
         return currCustomer;
     }
 
+    void EnableCameraPositionsGroup(int idx)
+    {
+        cameraPositions.GetChild(cameraPositionsIdx).gameObject.SetActive(false);
+        cameraPositionsIdx = idx;
+        cameraPositions.GetChild(cameraPositionsIdx).gameObject.SetActive(true);
+    }
+
     public void BeginGuitar()
     {
+        EnableCameraPositionsGroup(0);
+        guitarSegment.SetActive(true);
         CameraSwitch.Instance.ChangeCamera();
         guitarShapeSelectionPanel.SetActive(true);
+    }
+
+    public void BeginDrums()
+    {
+        EnableCameraPositionsGroup(1);
+        drumsSegment.SetActive(true);
+        CameraSwitch.Instance.ChangeCamera();
+    }
+
+    public void BeginKeyboard()
+    {
+
     }
 
     ///TECHNICAL PART

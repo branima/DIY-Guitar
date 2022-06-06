@@ -5,7 +5,7 @@ using UnityEngine;
 public class DragAndDrop : MonoBehaviour
 {   
     
-    public GameObject guitar;
+    GameObject draggedObject;
 
     private Vector3 mOffset;
     private float mZCord;
@@ -17,15 +17,15 @@ public class DragAndDrop : MonoBehaviour
     bool warp;
 
     void Awake(){
-        guitar = gameObject;
+        draggedObject = gameObject;
         directionDown = true;
         warp = false;
     }
 
     void OnMouseDown()
     {
-        mZCord = Camera.main.WorldToScreenPoint(guitar.transform.position).z;
-        mOffset = guitar.transform.position - GetMouseWorldPos();
+        mZCord = Camera.main.WorldToScreenPoint(draggedObject.transform.position).z;
+        mOffset = draggedObject.transform.position - GetMouseWorldPos();
     }
 
     private Vector3 GetMouseWorldPos()
@@ -39,13 +39,13 @@ public class DragAndDrop : MonoBehaviour
     void OnMouseDrag()
     {
         Vector3 move = GetMouseWorldPos() + mOffset;
-        Vector3 currPos = guitar.transform.position;
+        Vector3 currPos = draggedObject.transform.position;
         float x = currPos.x;
         float y = move.y;
         float z = currPos.z;
         //Debug.Log(currPos.y - move.y);
         if((directionDown && currPos.y - move.y > 0) || (!directionDown && currPos.y - move.y < 0)){
-            guitar.transform.position = new Vector3(x, y, z);
+            draggedObject.transform.position = new Vector3(x, y, z);
             if(warp){
                 float distance = Mathf.Abs(currPos.y - move.y);
                 float currAmmount = dipMat.GetFloat("WarpAmount");
@@ -54,7 +54,7 @@ public class DragAndDrop : MonoBehaviour
         }
     }
 
-    public void StartWapring(MeshRenderer dipMeshRenderer){ 
+    public void StartWarping(MeshRenderer dipMeshRenderer){ 
         this.dipMeshRenderer = dipMeshRenderer;
         dipMat = dipMeshRenderer.material;
         warp = true;
