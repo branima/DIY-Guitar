@@ -11,6 +11,7 @@ TagManager:
   - acoustic
   - camPositions
   - hetfield
+  - rim
   layers:
   - Default
   - TransparentFX

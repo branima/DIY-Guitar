@@ -32,7 +32,7 @@ public class DragAndDrop : MonoBehaviour
     {
         Vector3 mousePoint = Input.mousePosition;
         mousePoint.z = mZCord;
-
+        
         return Camera.main.ScreenToWorldPoint(mousePoint);
     }
 
@@ -62,9 +62,5 @@ public class DragAndDrop : MonoBehaviour
 
     public void SwitchDirection(){
         directionDown = !directionDown;
-    }
-
-    public bool isDirectionDown(){
-        return directionDown;
     }
 }

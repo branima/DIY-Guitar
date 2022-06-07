@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FinalDecorColoring : MonoBehaviour
+public class RimColorSelection : MonoBehaviour
 {
-
     public Material[] colors;
     public Transform paintables;
 
@@ -22,11 +21,7 @@ public class FinalDecorColoring : MonoBehaviour
 
         foreach (Transform item in paintables)
         {
-            //item.GetComponent<Renderer>().material = targetMat;
-            Material[] mats = item.GetComponent<Renderer>().materials;
-            for (int i = 0; i < mats.Length; i++)
-                mats[i] = targetMat;
-            item.GetComponent<Renderer>().materials = mats;
+            item.GetComponent<Renderer>().material = targetMat;
         }
     }
 }

@@ -5,7 +5,8 @@ using UnityEngine;
 public class DipLogic : MonoBehaviour
 {
 
-    public DragAndDrop dragAndDrop;
+    //public DragAndDrop dragAndDrop;
+    public HoldAndDip holdAndDip;
 
     public GameObject dipBrush;
 
@@ -24,25 +25,31 @@ public class DipLogic : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        Debug.Log(other.name + ", " + other.tag);
+        //Debug.Log(other.name + ", " + other.tag);
         if (other.name == "SinkLimit")
         {
             //other.GetComponentInParent<MeshRenderer>().material.mainTexture = dipTexture;
-            dragAndDrop.SwitchDirection();
+            //dragAndDrop.SwitchDirection();
+            holdAndDip.DipOut();
             other.transform.parent.GetChild(other.transform.GetSiblingIndex() + 1).gameObject.SetActive(true);
             other.gameObject.SetActive(false);
             dipBrush.SetActive(false);
         }
         else if (other.name == "LiftLimit")
         {
+            /*
             if (dipWarping)
             {
-                Destroy(dragAndDrop);
+                //Destroy(dragAndDrop);
+                Destroy(holdAndDip);
             }
-            else{
-                dragAndDrop.StartWarping(GetComponent<MeshRenderer>());
-                dipWarping = true;
-            }
+            else
+            {
+            */
+            holdAndDip.StartWarping(GetComponent<MeshRenderer>());
+            //dragAndDrop.StartWarping(GetComponent<MeshRenderer>());
+            dipWarping = true;
+            //}
         }
     }
 }
