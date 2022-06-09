@@ -21,7 +21,7 @@ public class GuitarSpawner : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
-        gameManager = FindObjectOfType<GameManager>();        
+        gameManager = FindObjectOfType<GameManager>();
         guitarClones = new GameObject[guitars.Length];
         ResetClones();
         currIdx = 0;
@@ -58,7 +58,6 @@ public class GuitarSpawner : MonoBehaviour
 
     public void ResetClones()
     {
-        Debug.Log("BEn");
         for (int i = 0; i < guitars.Length; i++)
         {
             if (guitarClones[i] == null)
@@ -69,7 +68,6 @@ public class GuitarSpawner : MonoBehaviour
                 guitar.transform.rotation = Quaternion.Euler(ga.cleaningRotation);
                 guitar.transform.localScale = guitar.transform.localScale * ga.cleaningSize;
                 guitarClones[i] = Instantiate(guitar, guitar.transform.position, guitar.transform.rotation, guitar.transform.parent);
-                Debug.Log(i + " " + guitar.transform.name);
             }
         }
     }

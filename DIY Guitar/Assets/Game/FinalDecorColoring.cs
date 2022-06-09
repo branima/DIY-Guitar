@@ -6,7 +6,15 @@ public class FinalDecorColoring : MonoBehaviour
 {
 
     public Material[] colors;
+    public DrumsLogic drumsLogic;
+
     public Transform paintables;
+
+    void OnEnable()
+    {
+        if (drumsLogic != null)
+            paintables = drumsLogic.GetPaintableDrum().transform.GetChild(2);
+    }
 
     public void SetColor(string name)
     {

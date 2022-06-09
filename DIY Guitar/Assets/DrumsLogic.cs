@@ -8,7 +8,9 @@ public class DrumsLogic : MonoBehaviour
     GameManager gameManager;
 
     public GameObject paintableDrum;
+    GameObject paintableDrumClone;
     public GameObject paintableCinela;
+    GameObject paintableCinelaClone;
 
     public Transform paintablePosition;
 
@@ -19,6 +21,7 @@ public class DrumsLogic : MonoBehaviour
     public GameObject stickerBrush;
 
     public GameObject drumSet;
+    GameObject drumSetClone;
     public Transform drummingTransform;
     bool fitting;
     bool showcaseReady;
@@ -29,9 +32,12 @@ public class DrumsLogic : MonoBehaviour
 
     void OnEnable()
     {
+        drumSetClone = Instantiate(drumSet, drumSet.transform.position, drumSet.transform.rotation, drumSet.transform.parent);
+        gameManager = FindObjectOfType<GameManager>();
+        paintableDrumClone = Instantiate(paintableDrum, paintableDrum.transform.position, paintableDrum.transform.rotation, paintableDrum.transform.parent);
+        paintableCinelaClone = Instantiate(paintableCinela, paintableCinela.transform.position, paintableCinela.transform.rotation, paintableCinela.transform.parent);
         dipSelectionPanel.SetActive(true);
         fitting = false;
-        gameManager = FindObjectOfType<GameManager>();
     }
 
     // Update is called once per frame
@@ -51,7 +57,7 @@ public class DrumsLogic : MonoBehaviour
         }
 
         showcaseReady = true;
-        foreach (Transform item in drumSet.transform)
+        foreach (Transform item in drumSetClone.transform)
         {
             if (item.tag != "Untagged")
                 showcaseReady = false;
@@ -61,7 +67,6 @@ public class DrumsLogic : MonoBehaviour
         {
             Invoke("Showcase", 0.75f);
             fitting = false;
-
         }
     }
 
@@ -69,7 +74,7 @@ public class DrumsLogic : MonoBehaviour
     {
         GlobalProgressBarLogic.Instance.gameObject.SetActive(false);
         CameraSwitch.Instance.ChangeCamera();
-        GameObject playableDrummingSet = Instantiate(drumSet, drummingTransform.position, drummingTransform.rotation);
+        GameObject playableDrummingSet = Instantiate(drumSetClone, drummingTransform.position, drummingTransform.rotation);
         Transform playingCustomer = gameManager.NextDrumsPlayingCustomer();
         playingCustomer.gameObject.SetActive(true);
         StartCoroutine(NextCustomer(playingCustomer.gameObject, playableDrummingSet, 5f));
@@ -78,22 +83,23 @@ public class DrumsLogic : MonoBehaviour
     public void CinelaPhase()
     {
         GlobalProgressBarLogic.Instance.ShowNextStep();
-        drumBaseMat = paintableDrum.GetComponent<MeshRenderer>().material;
-        drumRimMat = paintableDrum.transform.GetChild(2).GetComponentInChildren<MeshRenderer>().material;
+        drumBaseMat = paintableDrumClone.GetComponent<MeshRenderer>().material;
+        drumRimMat = paintableDrumClone.transform.GetChild(2).GetComponentInChildren<MeshRenderer>().material;
 
         rimColorSelectionPanel.SetActive(false);
         stickerPanel.SetActive(true);
         stickerBrush.SetActive(true);
         Vector3 outVector = paintablePosition.position - Vector3.up * 5f;
-        paintableDrum.GetComponent<TravelAToB>().Travel(outVector);
-        paintableCinela.GetComponent<TravelAToB>().Travel(paintablePosition, new Vector3(-8f, 0f, -3f));
+        paintableDrumClone.GetComponent<TravelAToB>().Travel(outVector);
+        paintableCinelaClone.SetActive(true);
+        paintableCinelaClone.GetComponent<TravelAToB>().Travel(paintablePosition, new Vector3(-8f, 0f, -3f));
     }
 
     public void DrumFitting()
     {
-        cinelaMats = paintableCinela.GetComponentInChildren<MeshRenderer>().materials;
+        cinelaMats = paintableCinelaClone.GetComponentInChildren<MeshRenderer>().materials;
 
-        drumSet.SetActive(true);
+        drumSetClone.SetActive(true);
         CameraSwitch.Instance.ChangeCamera();
         GlobalProgressBarLogic.Instance.ShowNextStep();
         stickerPanel.SetActive(false);
@@ -116,6 +122,16 @@ public class DrumsLogic : MonoBehaviour
         return drumRimMat;
     }
 
+    public GameObject GetPaintableDrum()
+    {
+        return paintableDrumClone;
+    }
+
+    public GameObject GetPaintableCinela()
+    {
+        return paintableCinelaClone;
+    }
+
     private IEnumerator NextCustomer(GameObject playingCustomer, GameObject drums, float waitTime)
     {
         yield return new WaitForSeconds(waitTime);
@@ -123,8 +139,11 @@ public class DrumsLogic : MonoBehaviour
         CameraSwitch.Instance.ChangeCamera();
         gameManager.GetCurrentCustomer().SetActive(false);
         gameManager.NextCustomer();
-        
-        playingCustomer.SetActive(false);
-        drums.SetActive(false);
+
+        Destroy(playingCustomer);
+        Destroy(paintableDrumClone);
+        Destroy(paintableCinelaClone);
+        Destroy(drums);
+        Destroy(drumSetClone);
     }
 }

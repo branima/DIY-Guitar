@@ -148,6 +148,7 @@ public class Restauration : MonoBehaviour
 
                 playingCustomerRig = gameManager.NextGuitarPlayingCustomer().GetChild(0).gameObject;
                 playingCustomerRig.transform.parent.gameObject.SetActive(true);
+                //Debug.Log(playingCustomerRig.name);
                 Transform guitarPos = playingCustomerRig.transform.GetChild(0);
                 Transform customer = playingCustomerRig.transform;
                 guitar.transform.position = guitarPos.position;

@@ -12,11 +12,13 @@ public class DipSelection : MonoBehaviour
     public Material dipWaterMat;
     public MeshRenderer dipWaterMR;
 
-    public GameObject drum;
+    public DrumsLogic drumsLogic;
+    GameObject drum;
 
-    void Awake()
+    void OnEnable()
     {
         SelectDip(0);
+        drum = drumsLogic.GetPaintableDrum();
     }
 
     public void SelectDip(int idx)

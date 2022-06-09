@@ -32,13 +32,16 @@ public class TravelAToB : MonoBehaviour
 
         transform.position = Vector3.Lerp(transform.position, endVectorPosition, lerpTime);
         transform.rotation = Quaternion.Euler(Vector3.Lerp(transform.rotation.eulerAngles, endVectorRotation, lerpTime));
-        
-        
+
+
         if ((Vector3.Distance(transform.position, endVectorPosition) < 0.1f))
         {
             transform.position = endVectorPosition;
             transform.rotation = Quaternion.Euler(endVectorRotation);
             travel = false;
+            Animator animator = GetComponent<Animator>();
+            if (transform.name.Contains("Cinela") && animator != null)
+                animator.enabled = true;
         }
     }
 

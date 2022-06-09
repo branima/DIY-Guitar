@@ -7,6 +7,7 @@ public class HoldAndDip : MonoBehaviour
 
     public float descendSpeed;
     bool travel;
+    bool rotate;
 
     MeshRenderer dipMeshRenderer;
     Material dipMat;
@@ -21,6 +22,7 @@ public class HoldAndDip : MonoBehaviour
     {
         travel = true;
         warp = false;
+        rotate = false;
         animator = GetComponent<Animator>();
     }
 
@@ -36,6 +38,15 @@ public class HoldAndDip : MonoBehaviour
                 dipMat.SetFloat("WarpAmount", currAmmount + Time.deltaTime * descendSpeed);
             }
         }
+
+        if (rotate)
+            transform.Rotate(0f, 270f * Time.deltaTime, 0f);
+    }
+
+    public void StartRotation()
+    {
+        animator.enabled = false;
+        rotate = true;
     }
 
     public void StartWarping(MeshRenderer dipMeshRenderer)
@@ -54,7 +65,7 @@ public class HoldAndDip : MonoBehaviour
     }
 
     void NextPhase()
-    {        
+    {
         animator.enabled = false;
         CameraSwitch.Instance.ChangeCamera();
         GlobalProgressBarLogic.Instance.ShowNextStep();

@@ -6,7 +6,8 @@ public class DipLogic : MonoBehaviour
 {
 
     //public DragAndDrop dragAndDrop;
-    public HoldAndDip holdAndDip;
+    public DrumsLogic drumsLogic;
+    HoldAndDip holdAndDip;
 
     public GameObject dipBrush;
 
@@ -16,11 +17,13 @@ public class DipLogic : MonoBehaviour
     bool dipWarping;
 
     // Start is called before the first frame update
-    void Start()
+    void OnEnable()
     {
         //dipTexture = GetComponent<MeshRenderer>().material.mainTexture;
         dipTexture = GetComponent<MeshRenderer>().material.GetTexture("DipTexture");
         dipWarping = false;
+        holdAndDip = drumsLogic.GetPaintableDrum().GetComponent<HoldAndDip>();
+        dipBrush.SetActive(true);
     }
 
     void OnTriggerEnter(Collider other)
@@ -28,8 +31,6 @@ public class DipLogic : MonoBehaviour
         //Debug.Log(other.name + ", " + other.tag);
         if (other.name == "SinkLimit")
         {
-            //other.GetComponentInParent<MeshRenderer>().material.mainTexture = dipTexture;
-            //dragAndDrop.SwitchDirection();
             holdAndDip.DipOut();
             other.transform.parent.GetChild(other.transform.GetSiblingIndex() + 1).gameObject.SetActive(true);
             other.gameObject.SetActive(false);
@@ -37,19 +38,9 @@ public class DipLogic : MonoBehaviour
         }
         else if (other.name == "LiftLimit")
         {
-            /*
-            if (dipWarping)
-            {
-                //Destroy(dragAndDrop);
-                Destroy(holdAndDip);
-            }
-            else
-            {
-            */
+
             holdAndDip.StartWarping(GetComponent<MeshRenderer>());
-            //dragAndDrop.StartWarping(GetComponent<MeshRenderer>());
             dipWarping = true;
-            //}
         }
     }
 }
