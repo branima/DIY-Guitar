@@ -12,6 +12,8 @@ TagManager:
   - camPositions
   - hetfield
   - rim
+  - drum
+  - cinela
   layers:
   - Default
   - TransparentFX

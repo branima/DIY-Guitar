@@ -11,8 +11,11 @@ public class GameManager : MonoBehaviour
     public Transform customers;
     GameObject currCustomer;
 
-    public Transform playingCustomers;
-    GameObject currPlayingCustomer;
+    public Transform guitarPlayingCustomers;
+    GameObject currGuitarPlayingCustomer;
+
+    public Transform drumsPlayingCustomers;
+    GameObject currDrumsPlayingCustomer;
 
     public GameObject tapToPlayMessage;
 
@@ -24,6 +27,8 @@ public class GameManager : MonoBehaviour
     public Transform cameraPositions;
     int cameraPositionsIdx;
 
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -33,11 +38,16 @@ public class GameManager : MonoBehaviour
 
     public void NextCustomer()
     {
-        if (currPlayingCustomer != null)
-            currPlayingCustomer.SetActive(false);
+        guitarSegment.SetActive(false);
+        drumsSegment.SetActive(false);
+        if (guitarPlayingCustomers.childCount > drumsPlayingCustomers.childCount)
+            Destroy(guitarPlayingCustomers.GetChild(0).gameObject);
+        else if (guitarPlayingCustomers.childCount < drumsPlayingCustomers.childCount)
+            Destroy(drumsPlayingCustomers.GetChild(0).gameObject);
 
         if (customers.childCount > 0)
         {
+
             currCustomer = customers.GetChild(0).gameObject;
             currCustomer.transform.parent = null;
             currCustomer.SetActive(true);
@@ -45,11 +55,18 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public Transform NextPlayingCustomer()
+    public Transform NextGuitarPlayingCustomer()
     {
-        currPlayingCustomer = playingCustomers.GetChild(0).gameObject;
-        currPlayingCustomer.transform.parent = null;
-        return currPlayingCustomer.transform;
+        currGuitarPlayingCustomer = guitarPlayingCustomers.GetChild(0).gameObject;
+        currGuitarPlayingCustomer.transform.parent = null;
+        return currGuitarPlayingCustomer.transform;
+    }
+
+    public Transform NextDrumsPlayingCustomer()
+    {
+        currDrumsPlayingCustomer = drumsPlayingCustomers.GetChild(0).gameObject;
+        currDrumsPlayingCustomer.transform.parent = null;
+        return currDrumsPlayingCustomer.transform;
     }
 
     public void EnableTapToPlayMessage()

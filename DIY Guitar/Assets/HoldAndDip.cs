@@ -54,9 +54,10 @@ public class HoldAndDip : MonoBehaviour
     }
 
     void NextPhase()
-    {
+    {        
         animator.enabled = false;
         CameraSwitch.Instance.ChangeCamera();
+        GlobalProgressBarLogic.Instance.ShowNextStep();
     }
 
     void OnBecameInvisible()

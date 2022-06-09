@@ -38,8 +38,6 @@ public class Restauration : MonoBehaviour
 
     int phase; /// 1 - Spraying, 2 - Pattern, 3 - Stickers, 4 - Final Decorations, 5 - Showcase
 
-    public GlobalProgressBarLogic globalProgressBar;
-
     bool patternDeployed;
 
     // Start is called before the first frame update
@@ -54,7 +52,6 @@ public class Restauration : MonoBehaviour
     public void StartPainting(GameObject guitar)
     {
         guitarShapeSelectionPanel.SetActive(false);
-        globalProgressBar.gameObject.SetActive(true);
         phase = 1;
         this.guitar = guitar;
         finalParts = guitar.GetComponentInChildren<FinalPartsLogic>();
@@ -64,7 +61,7 @@ public class Restauration : MonoBehaviour
         sprayPanel.SetActive(true);
         paintingBrush.SetActive(true);
         sprayCan.SetActive(true);
-        globalProgressBar.ShowNextStep();
+        GlobalProgressBarLogic.Instance.ShowNextStep();
 
         foreach (GameObject pattern in patterns)
         {
@@ -95,7 +92,7 @@ public class Restauration : MonoBehaviour
 
         phase++;
         if (phase != 5)
-            globalProgressBar.ShowNextStep();
+            GlobalProgressBarLogic.Instance.ShowNextStep();
         if (patternDeployed && phase == 2)
         {
             paintingBrush.SetActive(false);
@@ -140,7 +137,7 @@ public class Restauration : MonoBehaviour
         }
         else if (phase == 5)
         {
-            globalProgressBar.gameObject.SetActive(false);
+            GlobalProgressBarLogic.Instance.gameObject.SetActive(false);
             if (!videoAdMode)
             {
                 finalDecorPanel.SetActive(false);
@@ -149,7 +146,7 @@ public class Restauration : MonoBehaviour
                 GuitarAttributes ga = guitar.GetComponent<GuitarAttributes>();
                 ga.ResetBrushesAndProps();
 
-                playingCustomerRig = gameManager.NextPlayingCustomer().GetChild(0).gameObject;
+                playingCustomerRig = gameManager.NextGuitarPlayingCustomer().GetChild(0).gameObject;
                 playingCustomerRig.transform.parent.gameObject.SetActive(true);
                 Transform guitarPos = playingCustomerRig.transform.GetChild(0);
                 Transform customer = playingCustomerRig.transform;
@@ -160,19 +157,21 @@ public class Restauration : MonoBehaviour
                 GameObject customerOg = gameManager.GetCurrentCustomer();
                 customerOg.SetActive(false);
 
-                Invoke("NextCustomer", 5f);
+                StartCoroutine(NextCustomer(playingCustomerRig.transform.parent.gameObject, 5f));
             }
             else
             {
                 finalDecorPanel.SetActive(false);
                 showcasePanel.SetActive(true);
-
             }
         }
     }
 
-    void NextCustomer()
+    private IEnumerator NextCustomer(GameObject playingCustomer, float waitTime)
     {
+        yield return new WaitForSeconds(waitTime);
+
+        Destroy(playingCustomer);
         foreach (GameObject pattern in patterns)
         {
             pattern.GetComponentInChildren<MeshRenderer>().enabled = true;
@@ -180,7 +179,7 @@ public class Restauration : MonoBehaviour
         }
 
         CameraSwitch.Instance.ChangeCamera();
-       
+
         phase = 0;
         gameManager.NextCustomer();
         patternDeployed = false;

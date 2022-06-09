@@ -5,11 +5,14 @@ using UnityEngine;
 public class GlobalProgressBarLogic : MonoBehaviour
 {
 
+    public static GlobalProgressBarLogic Instance;
+
     List<Transform> buttons;
     int activeIdx;
 
     void Awake()
     {
+        Instance = this;
         Reset();
     }
 

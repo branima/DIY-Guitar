@@ -15,33 +15,36 @@ public class GuitarSpawner : MonoBehaviour
     public PatternLogic patternLogic;
 
     public GameObject[] guitars;
+    GameObject[] guitarClones;
     int currIdx;
 
     // Start is called before the first frame update
     void Awake()
     {
-        gameManager = FindObjectOfType<GameManager>();
-
-        foreach (GameObject guitar in guitars)
-        {
-            GuitarAttributes ga = guitar.GetComponent<GuitarAttributes>();
-            guitar.transform.position = ga.GetCleaningPosition();
-            guitar.transform.rotation = Quaternion.Euler(ga.cleaningRotation);
-            guitar.transform.localScale = guitar.transform.localScale * ga.cleaningSize;
-        }
+        gameManager = FindObjectOfType<GameManager>();        
+        guitarClones = new GameObject[guitars.Length];
+        ResetClones();
         currIdx = 0;
-    }    
+    }
+
+    void OnEnable()
+    {
+        //ResetClones();
+    }
 
     public void SelectGuitar(int idx)
     {
-        guitars[currIdx].SetActive(false);
+        guitarClones[currIdx].SetActive(false);
         currIdx = idx;
-        guitars[currIdx].SetActive(true);
+        guitarClones[currIdx].SetActive(true);
     }
 
     public void ConfirmSelection()
     {
-        SpawnGuitar(guitars[currIdx]);
+        SpawnGuitar(guitarClones[currIdx]);
+
+        GameObject guitar = guitars[currIdx];
+        guitarClones[currIdx] = Instantiate(guitar, guitar.transform.position, guitar.transform.rotation, guitar.transform.parent);
     }
 
     public void SpawnGuitar(GameObject guitar)
@@ -51,5 +54,23 @@ public class GuitarSpawner : MonoBehaviour
         patternLogic.EnablePatternGroup(ga.guitarType);
         ga.ScaleBrushesAndProps();
         restauration.StartPainting(guitar.gameObject);
+    }
+
+    public void ResetClones()
+    {
+        Debug.Log("BEn");
+        for (int i = 0; i < guitars.Length; i++)
+        {
+            if (guitarClones[i] == null)
+            {
+                GameObject guitar = guitars[i];
+                GuitarAttributes ga = guitar.GetComponent<GuitarAttributes>();
+                guitar.transform.position = ga.GetCleaningPosition();
+                guitar.transform.rotation = Quaternion.Euler(ga.cleaningRotation);
+                guitar.transform.localScale = guitar.transform.localScale * ga.cleaningSize;
+                guitarClones[i] = Instantiate(guitar, guitar.transform.position, guitar.transform.rotation, guitar.transform.parent);
+                Debug.Log(i + " " + guitar.transform.name);
+            }
+        }
     }
 }

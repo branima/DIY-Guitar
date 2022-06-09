@@ -14,6 +14,11 @@ public class DipSelection : MonoBehaviour
 
     public GameObject drum;
 
+    void Awake()
+    {
+        SelectDip(0);
+    }
+
     public void SelectDip(int idx)
     {
         Texture selectedTexture = dipTextures[idx];
@@ -23,6 +28,7 @@ public class DipSelection : MonoBehaviour
 
     public void ConfirmDipPattern(GameObject panel)
     {
+        GlobalProgressBarLogic.Instance.ShowNextStep();
         drum.SetActive(true);
         panel.SetActive(false);
         CameraSwitch.Instance.ChangeCamera();
