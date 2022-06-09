@@ -23,6 +23,7 @@ public class GameManager : MonoBehaviour
 
     public GameObject guitarSegment;
     public GameObject drumsSegment;
+    public GameObject pianoSegment;
 
     public Transform cameraPositions;
     int cameraPositionsIdx;
@@ -103,7 +104,9 @@ public class GameManager : MonoBehaviour
 
     public void BeginKeyboard()
     {
-
+        EnableCameraPositionsGroup(2);
+        pianoSegment.SetActive(true);
+        CameraSwitch.Instance.ChangeCamera();
     }
 
     ///TECHNICAL PART
