@@ -14,7 +14,7 @@ public class ScatterOnTouch : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         RaycastHit hit;
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -23,7 +23,19 @@ public class ScatterOnTouch : MonoBehaviour
         {
             rb.isKinematic = false;
             rb.useGravity = true;
-            rb.AddForce(1f, 1f, 1f, ForceMode.Impulse);
+            transform.GetComponent<MeshCollider>().isTrigger = false;
+            //rb.AddForce(0f, 3f, 2f, ForceMode.Impulse);
+            rb.AddForce(PickBetweenTwoNumbers(Random.Range(-2.5f, -1.5f), Random.Range(1.5f, 2.5f)), Random.Range(1.5f, 2.5f), PickBetweenTwoNumbers(Random.Range(-2.5f, -1.5f), Random.Range(1.5f, 2.5f)), ForceMode.Impulse);                //flying = true;
+            transform.parent = null;
         }
+    }
+
+    float PickBetweenTwoNumbers(float x, float y)
+    {
+        float z = Random.Range(0f, 1f);
+        if (z < 0.5)
+            return x;
+        else
+            return y;
     }
 }

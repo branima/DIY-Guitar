@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -34,14 +34,11 @@ public class TravelAToB : MonoBehaviour
         transform.rotation = Quaternion.Euler(Vector3.Lerp(transform.rotation.eulerAngles, endVectorRotation, lerpTime));
 
 
-        if ((Vector3.Distance(transform.position, endVectorPosition) < 0.1f))
+        if (Vector3.Distance(transform.position, endVectorPosition) < 0.1f && Vector3.Distance(transform.rotation.eulerAngles, endVectorRotation) < 0.1f)
         {
             transform.position = endVectorPosition;
             transform.rotation = Quaternion.Euler(endVectorRotation);
             travel = false;
-            Animator animator = GetComponent<Animator>();
-            if (transform.name.Contains("Cinela") && animator != null)
-                animator.enabled = true;
         }
     }
 
