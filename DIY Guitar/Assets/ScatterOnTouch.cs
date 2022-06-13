@@ -7,6 +7,8 @@ public class ScatterOnTouch : MonoBehaviour
 
     Rigidbody rb;
 
+    float forceModifier = 1.5f;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -25,8 +27,9 @@ public class ScatterOnTouch : MonoBehaviour
             rb.useGravity = true;
             transform.GetComponent<MeshCollider>().isTrigger = false;
             //rb.AddForce(0f, 3f, 2f, ForceMode.Impulse);
-            rb.AddForce(PickBetweenTwoNumbers(Random.Range(-2.5f, -1.5f), Random.Range(1.5f, 2.5f)), Random.Range(1.5f, 2.5f), PickBetweenTwoNumbers(Random.Range(-2.5f, -1.5f), Random.Range(1.5f, 2.5f)), ForceMode.Impulse);                //flying = true;
+            rb.AddForce(PickBetweenTwoNumbers(Random.Range(-2.5f, -1.5f), Random.Range(1.5f, 2.5f)) * forceModifier, Random.Range(1.5f, 2.5f) * forceModifier, PickBetweenTwoNumbers(Random.Range(-2.5f, -1.5f), Random.Range(1.5f, 2.5f)) * forceModifier, ForceMode.Impulse);                //flying = true;
             transform.parent = null;
+            Invoke("DestroyThis", 1f);
         }
     }
 
@@ -37,5 +40,10 @@ public class ScatterOnTouch : MonoBehaviour
             return x;
         else
             return y;
+    }
+
+    void DestroyThis()
+    {
+        Destroy(this);
     }
 }

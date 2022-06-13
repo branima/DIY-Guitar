@@ -15,6 +15,7 @@ TagManager:
   - drum
   - cinela
   - pianoKey
+  - key
   layers:
   - Default
   - TransparentFX

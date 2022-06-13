@@ -5,7 +5,10 @@ using UnityEngine;
 public class PianoLogic : MonoBehaviour
 {
 
+    GameManager gameManager;
+
     public GameObject paintablePiano;
+    GameObject paintablePianoClone;
     public Transform paintingPosition;
 
     public GameObject paintingBrush;
@@ -16,33 +19,91 @@ public class PianoLogic : MonoBehaviour
     public GameObject stickerPanel;
 
     public GameObject paintableKey;
+    GameObject paintableKeyClone;
+    public Transform keyPosition;
 
-    int phaseNum;
+    bool readyForPainting;
+    bool fitting;
+    bool showcaseReady;
+
+    public GameObject keyPaintingPanel;
+
+    Material keyMat;
+
+    public GameObject pianoShowcasePosition;
 
     // Start is called before the first frame update
     void Start()
     {
-        phaseNum = 1;
+        gameManager = FindObjectOfType<GameManager>();
+        readyForPainting = false;
+        fitting = false;
+        paintablePianoClone = Instantiate(paintablePiano, paintablePiano.transform.position, paintablePiano.transform.rotation, paintablePiano.transform.parent);
+        paintablePianoClone.SetActive(true);
+        paintableKeyClone = Instantiate(paintableKey, paintableKey.transform.position, paintableKey.transform.rotation, paintableKey.transform.parent);
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (paintablePiano.transform.childCount == 1 && phaseNum == 1)
+        if (paintablePianoClone.transform.childCount == 2 && !readyForPainting)
         {
-            paintablePiano.GetComponent<MeshCollider>().enabled = true;
-            TravelAToB travelScript = paintablePiano.AddComponent<TravelAToB>();
+            paintablePianoClone.GetComponent<MeshCollider>().enabled = true;
+            TravelAToB travelScript = paintablePianoClone.AddComponent<TravelAToB>();
             travelScript.moveSpeed = 0.25f;
             travelScript.Travel(paintingPosition);
             CameraSwitch.Instance.ChangeCamera();
-            phaseNum++;
+            readyForPainting = true;
 
             Invoke("EnablePainting", 1f);
         }
+
+        if (!fitting)
+            return;
+
+        RaycastHit hit;
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+        if (Input.GetMouseButton(0) && Physics.Raycast(ray, out hit))
+        {
+            KeyFitLogic fitScript = hit.transform.GetComponent<KeyFitLogic>();
+            if (fitScript != null)
+                fitScript.Travel();
+        }
+
+        showcaseReady = true;
+        Transform keys = paintablePianoClone.transform.GetChild(1);
+        foreach (Transform item in keys)
+        {
+            if (item.tag != "Untagged")
+                showcaseReady = false;
+        }
+
+        if (showcaseReady)
+        {
+            Invoke("Showcase", 1.5f);
+            fitting = false;
+        }
+    }
+
+    public void Showcase()
+    {
+        Destroy(gameManager.GetCurrentCustomer());
+        pianoShowcasePosition.SetActive(true);
+        GlobalProgressBarLogic.Instance.gameObject.SetActive(false);
+        CameraSwitch.Instance.ChangeCamera();
+        Transform playingCustomer = gameManager.NextPianoPlayingCustomer();
+        playingCustomer.gameObject.SetActive(true);
+        //StartCoroutine(NextCustomer(playingCustomer.gameObject, playableDrummingSet, 3.5f)); OVDE NASTAVLJAMO
+
+        paintablePianoClone.transform.position = pianoShowcasePosition.transform.GetChild(0).position;
+        paintablePianoClone.transform.rotation = pianoShowcasePosition.transform.GetChild(0).rotation;
+        paintablePianoClone.transform.localScale = pianoShowcasePosition.transform.GetChild(0).localScale;
     }
 
     public void EnablePainting()
     {
+        GlobalProgressBarLogic.Instance.ShowNextStep();
         paintingPanel.SetActive(true);
         paintingBrush.SetActive(true);
         spraycan.SetActive(true);
@@ -50,6 +111,7 @@ public class PianoLogic : MonoBehaviour
 
     public void EnableStickering()
     {
+        GlobalProgressBarLogic.Instance.ShowNextStep();
         CameraSwitch.Instance.ChangeCamera();
 
         paintingPanel.SetActive(false);
@@ -62,10 +124,80 @@ public class PianoLogic : MonoBehaviour
 
     public void KeyPainting()
     {
+        GlobalProgressBarLogic.Instance.ShowNextStep();
         CameraSwitch.Instance.ChangeCamera();
+
+        TravelAToB travelScriptPiano = paintablePianoClone.GetComponent<TravelAToB>();
+        if (travelScriptPiano == null)
+            travelScriptPiano = paintablePianoClone.AddComponent<TravelAToB>();
+
+        TravelAToB travelScriptKey = paintableKeyClone.GetComponent<TravelAToB>();
+        if (travelScriptKey == null)
+            travelScriptKey = paintableKeyClone.AddComponent<TravelAToB>();
 
         stickerPanel.SetActive(false);
         stickerBrush.SetActive(false);
 
+        paintableKeyClone.SetActive(true);
+        keyPaintingPanel.SetActive(true);
+        paintingBrush.SetActive(true);
+        spraycan.SetActive(true);
+
+        travelScriptPiano.Travel(paintablePianoClone.transform.position + Vector3.left * 3f);
+        travelScriptKey.moveSpeed = 0.2f;
+        travelScriptKey.Travel(keyPosition);
     }
+
+    public void KeyFitting()
+    {
+        GlobalProgressBarLogic.Instance.ShowNextStep();
+        fitting = true;
+        keyMat = paintableKeyClone.GetComponent<MeshRenderer>().material;
+        keyMat.renderQueue = 3100;
+
+        CameraSwitch.Instance.ChangeCamera();
+
+        keyPaintingPanel.SetActive(false);
+        paintingBrush.SetActive(false);
+        spraycan.SetActive(false);
+
+        paintablePianoClone.transform.GetChild(1).gameObject.SetActive(true);
+
+        Transform keys = paintablePianoClone.transform.GetChild(1);
+        foreach (Transform item in keys)
+        {
+            Transform key = item.GetChild(0);
+            if (!key.name.Contains("black"))
+                key.GetComponent<MeshRenderer>().material = keyMat;
+        }
+
+        TravelAToB travelScriptPiano = paintablePianoClone.GetComponent<TravelAToB>();
+        if (travelScriptPiano == null)
+            travelScriptPiano = paintablePianoClone.AddComponent<TravelAToB>();
+
+        TravelAToB travelScriptKey = paintableKeyClone.GetComponent<TravelAToB>();
+        if (travelScriptKey == null)
+            travelScriptKey = paintableKeyClone.AddComponent<TravelAToB>();
+
+        travelScriptPiano.Travel(paintingPosition, paintablePianoClone.transform.rotation.eulerAngles - new Vector3(0f, 90f, 0f));
+        travelScriptKey.moveSpeed = 1f;
+        travelScriptKey.Travel(paintableKeyClone.transform.position + Vector3.left * 3f);
+    }
+
+    /*
+    private IEnumerator NextCustomer(GameObject playingCustomer, GameObject drums, float waitTime)
+    {
+        yield return new WaitForSeconds(waitTime);
+
+        CameraSwitch.Instance.ChangeCamera();
+        gameManager.GetCurrentCustomer().SetActive(false);
+        gameManager.NextCustomer();
+
+        Destroy(playingCustomer);
+        Destroy(paintableDrumClone);
+        Destroy(paintableCinelaClone);
+        Destroy(drums);
+        Destroy(drumSetClone);
+    }
+    */
 }

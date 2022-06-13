@@ -12,12 +12,6 @@ public class DrumPartFitLogic : MonoBehaviour
         drumsLogic = FindObjectOfType<DrumsLogic>();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
     public void Travel(string objectType)
     {
         Transform realObject = transform.GetChild(0);

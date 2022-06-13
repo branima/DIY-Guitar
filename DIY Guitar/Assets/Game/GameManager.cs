@@ -17,6 +17,9 @@ public class GameManager : MonoBehaviour
     public Transform drumsPlayingCustomers;
     GameObject currDrumsPlayingCustomer;
 
+    public Transform pianoPlayingCustomers;
+    GameObject currPianoPlayingCustomer;
+
     public GameObject tapToPlayMessage;
 
     public GameObject guitarShapeSelectionPanel;
@@ -27,8 +30,6 @@ public class GameManager : MonoBehaviour
 
     public Transform cameraPositions;
     int cameraPositionsIdx;
-
-
 
     // Start is called before the first frame update
     void Start()
@@ -68,6 +69,13 @@ public class GameManager : MonoBehaviour
         currDrumsPlayingCustomer = drumsPlayingCustomers.GetChild(0).gameObject;
         currDrumsPlayingCustomer.transform.parent = null;
         return currDrumsPlayingCustomer.transform;
+    }
+
+    public Transform NextPianoPlayingCustomer()
+    {
+        currPianoPlayingCustomer = pianoPlayingCustomers.GetChild(0).gameObject;
+        currPianoPlayingCustomer.transform.parent = null;
+        return currPianoPlayingCustomer.transform;
     }
 
     public void EnableTapToPlayMessage()
