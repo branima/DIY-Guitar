@@ -39,6 +39,9 @@ public class TravelAToB : MonoBehaviour
             transform.position = endVectorPosition;
             transform.rotation = Quaternion.Euler(endVectorRotation);
             travel = false;
+            Animator animator = transform.GetComponent<Animator>();
+            if (transform.name.Contains("Cinela") && animator != null)
+                animator.enabled = true;
         }
     }
 

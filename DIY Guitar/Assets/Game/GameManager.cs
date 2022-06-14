@@ -31,6 +31,13 @@ public class GameManager : MonoBehaviour
     public Transform cameraPositions;
     int cameraPositionsIdx;
 
+    public GameObject guitarRenderCamera;
+    public GameObject drumsRenderCamera;
+    public GameObject pianoRenderCamera;
+
+    public GameObject showcasePanel;
+    GameObject showcasedObject;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -40,16 +47,25 @@ public class GameManager : MonoBehaviour
 
     public void NextCustomer()
     {
+        showcasePanel.SetActive(false);
+        if (showcasedObject != null)
+        {
+            showcasedObject.SetActive(false);
+            Destroy(showcasedObject);
+        }
+
         guitarSegment.SetActive(false);
         drumsSegment.SetActive(false);
-        if (guitarPlayingCustomers.childCount > drumsPlayingCustomers.childCount)
+        pianoSegment.SetActive(false);
+        if ((guitarPlayingCustomers.childCount > drumsPlayingCustomers.childCount) || (guitarPlayingCustomers.childCount > pianoPlayingCustomers.childCount))
             Destroy(guitarPlayingCustomers.GetChild(0).gameObject);
-        else if (guitarPlayingCustomers.childCount < drumsPlayingCustomers.childCount)
+        if ((drumsPlayingCustomers.childCount > guitarPlayingCustomers.childCount) || (drumsPlayingCustomers.childCount > pianoPlayingCustomers.childCount))
             Destroy(drumsPlayingCustomers.GetChild(0).gameObject);
+        if ((pianoPlayingCustomers.childCount > drumsPlayingCustomers.childCount) || (pianoPlayingCustomers.childCount > guitarPlayingCustomers.childCount))
+            Destroy(pianoPlayingCustomers.GetChild(0).gameObject);
 
         if (customers.childCount > 0)
         {
-
             currCustomer = customers.GetChild(0).gameObject;
             currCustomer.transform.parent = null;
             currCustomer.SetActive(true);
@@ -115,6 +131,21 @@ public class GameManager : MonoBehaviour
         EnableCameraPositionsGroup(2);
         pianoSegment.SetActive(true);
         CameraSwitch.Instance.ChangeCamera();
+    }
+
+    public void ShowcasePanel(string instrumentName, GameObject showcasedObject)
+    {
+        if (showcasedObject != null)
+            this.showcasedObject = showcasedObject;
+
+        if (instrumentName == "guitar")
+            guitarRenderCamera.SetActive(true);
+        else if (instrumentName == "drums")
+            drumsRenderCamera.SetActive(true);
+        else if (instrumentName == "piano")
+            pianoRenderCamera.SetActive(true);
+
+        showcasePanel.SetActive(true);
     }
 
     ///TECHNICAL PART

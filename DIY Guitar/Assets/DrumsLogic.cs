@@ -32,9 +32,15 @@ public class DrumsLogic : MonoBehaviour
 
     void OnEnable()
     {
+        if (drumSetClone != null)
+            Destroy(drumSetClone);
         drumSetClone = Instantiate(drumSet, drumSet.transform.position, drumSet.transform.rotation, drumSet.transform.parent);
         gameManager = FindObjectOfType<GameManager>();
+        if (paintableDrumClone != null)
+            Destroy(paintableDrumClone);
         paintableDrumClone = Instantiate(paintableDrum, paintableDrum.transform.position, paintableDrum.transform.rotation, paintableDrum.transform.parent);
+        if (paintableCinelaClone != null)
+            Destroy(paintableCinelaClone);
         paintableCinelaClone = Instantiate(paintableCinela, paintableCinela.transform.position, paintableCinela.transform.rotation, paintableCinela.transform.parent);
         dipSelectionPanel.SetActive(true);
         fitting = false;
@@ -92,7 +98,9 @@ public class DrumsLogic : MonoBehaviour
         Vector3 outVector = paintablePosition.position - Vector3.up * 5f;
         paintableDrumClone.GetComponent<TravelAToB>().Travel(outVector);
         paintableCinelaClone.SetActive(true);
-        paintableCinelaClone.GetComponent<TravelAToB>().Travel(paintablePosition, new Vector3(-8f, 0f, -3f));
+        //paintableCinelaClone.GetComponent<TravelAToB>().Travel(paintablePosition, new Vector3(-8f, 0f, -3f));
+        paintableCinelaClone.transform.rotation = Quaternion.Euler(new Vector3(-8f, 0f, -3f));
+        paintableCinelaClone.GetComponent<TravelAToB>().Travel(paintablePosition.position);
     }
 
     public void DrumFitting()
@@ -136,14 +144,15 @@ public class DrumsLogic : MonoBehaviour
     {
         yield return new WaitForSeconds(waitTime);
 
+        gameManager.ShowcasePanel("drums", drums);
         CameraSwitch.Instance.ChangeCamera();
         gameManager.GetCurrentCustomer().SetActive(false);
-        gameManager.NextCustomer();
+        //gameManager.NextCustomer();
 
         Destroy(playingCustomer);
-        Destroy(paintableDrumClone);
-        Destroy(paintableCinelaClone);
-        Destroy(drums);
+        //Destroy(paintableDrumClone);
+        //Destroy(paintableCinelaClone);
+        //Destroy(drums);
         Destroy(drumSetClone);
     }
 }

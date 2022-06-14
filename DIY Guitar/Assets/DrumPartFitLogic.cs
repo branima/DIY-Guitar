@@ -38,7 +38,7 @@ public class DrumPartFitLogic : MonoBehaviour
         }
 
         TravelAToB travelScript = realObject.gameObject.AddComponent<TravelAToB>();
-        travelScript.moveSpeed = 0.25f;
+        travelScript.moveSpeed = 0.35f;
         travelScript.Travel(transform);
         Destroy(gameObject);
     }

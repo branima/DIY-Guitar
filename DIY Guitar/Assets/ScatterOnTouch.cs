@@ -9,27 +9,44 @@ public class ScatterOnTouch : MonoBehaviour
 
     float forceModifier = 1.5f;
 
+    bool flying;
+    float lerpTime;
+
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        flying = false;
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        RaycastHit hit;
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-        if (Input.GetMouseButton(0) && Physics.Raycast(ray, out hit) && hit.transform == transform)
+        if (!flying)
         {
-            rb.isKinematic = false;
-            rb.useGravity = true;
-            transform.GetComponent<MeshCollider>().isTrigger = false;
-            //rb.AddForce(0f, 3f, 2f, ForceMode.Impulse);
-            rb.AddForce(PickBetweenTwoNumbers(Random.Range(-2.5f, -1.5f), Random.Range(1.5f, 2.5f)) * forceModifier, Random.Range(1.5f, 2.5f) * forceModifier, PickBetweenTwoNumbers(Random.Range(-2.5f, -1.5f), Random.Range(1.5f, 2.5f)) * forceModifier, ForceMode.Impulse);                //flying = true;
-            transform.parent = null;
-            Invoke("DestroyThis", 1f);
+            RaycastHit hit;
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+            if (Input.GetMouseButton(0) && Physics.Raycast(ray, out hit) && hit.transform == transform)
+            {
+                rb.isKinematic = false;
+                rb.useGravity = true;
+                transform.GetComponent<MeshCollider>().isTrigger = false;
+                //rb.AddForce(0f, 3f, 2f, ForceMode.Impulse);
+                rb.AddForce(PickBetweenTwoNumbers(Random.Range(-2.5f, -1.5f), Random.Range(1.5f, 2.5f)) * forceModifier, Random.Range(1.5f, 2.5f) * forceModifier, PickBetweenTwoNumbers(Random.Range(-2.5f, -1.5f), Random.Range(1.5f, 2.5f)) * forceModifier, ForceMode.Impulse);                //flying = true;
+                transform.parent = null;
+                flying = true;
+            }
+        }
+    }
+
+    void Update()
+    {
+        if (flying)
+        {
+            transform.localScale = Vector3.MoveTowards(transform.localScale, Vector3.zero, Time.deltaTime * 2f);
+            if (transform.localScale == Vector3.zero)
+                Destroy(gameObject);
         }
     }
 

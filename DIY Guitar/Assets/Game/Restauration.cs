@@ -172,6 +172,7 @@ public class Restauration : MonoBehaviour
     {
         yield return new WaitForSeconds(waitTime);
 
+        guitar.transform.parent = null;
         Destroy(playingCustomer);
         foreach (GameObject pattern in patterns)
         {
@@ -179,10 +180,11 @@ public class Restauration : MonoBehaviour
             pattern.SetActive(false);
         }
 
+        gameManager.ShowcasePanel("guitar", guitar);
         CameraSwitch.Instance.ChangeCamera();
 
         phase = 0;
-        gameManager.NextCustomer();
+        //gameManager.NextCustomer();
         patternDeployed = false;
     }
 }

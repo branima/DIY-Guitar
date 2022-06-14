@@ -33,7 +33,7 @@ public class PianoLogic : MonoBehaviour
     public GameObject pianoShowcasePosition;
 
     // Start is called before the first frame update
-    void Start()
+    void OnEnable()
     {
         gameManager = FindObjectOfType<GameManager>();
         readyForPainting = false;
@@ -94,11 +94,12 @@ public class PianoLogic : MonoBehaviour
         CameraSwitch.Instance.ChangeCamera();
         Transform playingCustomer = gameManager.NextPianoPlayingCustomer();
         playingCustomer.gameObject.SetActive(true);
-        //StartCoroutine(NextCustomer(playingCustomer.gameObject, playableDrummingSet, 3.5f)); OVDE NASTAVLJAMO
 
         paintablePianoClone.transform.position = pianoShowcasePosition.transform.GetChild(0).position;
         paintablePianoClone.transform.rotation = pianoShowcasePosition.transform.GetChild(0).rotation;
         paintablePianoClone.transform.localScale = pianoShowcasePosition.transform.GetChild(0).localScale;
+
+        StartCoroutine(NextCustomer(playingCustomer.gameObject, 3.5f));
     }
 
     public void EnablePainting()
@@ -180,24 +181,23 @@ public class PianoLogic : MonoBehaviour
             travelScriptKey = paintableKeyClone.AddComponent<TravelAToB>();
 
         travelScriptPiano.Travel(paintingPosition, paintablePianoClone.transform.rotation.eulerAngles - new Vector3(0f, 90f, 0f));
-        travelScriptKey.moveSpeed = 1f;
+        travelScriptKey.moveSpeed = 2f;
         travelScriptKey.Travel(paintableKeyClone.transform.position + Vector3.left * 3f);
     }
 
-    /*
-    private IEnumerator NextCustomer(GameObject playingCustomer, GameObject drums, float waitTime)
+
+    private IEnumerator NextCustomer(GameObject playingCustomer, float waitTime)
     {
         yield return new WaitForSeconds(waitTime);
 
+        gameManager.ShowcasePanel("piano", paintablePianoClone);
         CameraSwitch.Instance.ChangeCamera();
-        gameManager.GetCurrentCustomer().SetActive(false);
-        gameManager.NextCustomer();
+        //gameManager.NextCustomer();
 
         Destroy(playingCustomer);
-        Destroy(paintableDrumClone);
-        Destroy(paintableCinelaClone);
-        Destroy(drums);
-        Destroy(drumSetClone);
+        Destroy(paintableKeyClone);
+        //Destroy(paintablePianoClone);
+        pianoShowcasePosition.SetActive(false);
     }
-    */
+
 }
