@@ -44,7 +44,7 @@ public class ScatterOnTouch : MonoBehaviour
     {
         if (flying)
         {
-            transform.localScale = Vector3.MoveTowards(transform.localScale, Vector3.zero, Time.deltaTime * 2f);
+            transform.localScale = Vector3.MoveTowards(transform.localScale, Vector3.zero, Time.deltaTime * 2.5f);
             if (transform.localScale == Vector3.zero)
                 Destroy(gameObject);
         }

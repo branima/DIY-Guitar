@@ -18,6 +18,8 @@ public class GuitarSpawner : MonoBehaviour
     GameObject[] guitarClones;
     int currIdx;
 
+    public GameObject nextButton;
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -37,6 +39,8 @@ public class GuitarSpawner : MonoBehaviour
         guitarClones[currIdx].SetActive(false);
         currIdx = idx;
         guitarClones[currIdx].SetActive(true);
+        if (!nextButton.activeSelf)
+            nextButton.SetActive(true);
     }
 
     public void ConfirmSelection()

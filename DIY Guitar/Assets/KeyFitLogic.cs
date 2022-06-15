@@ -11,7 +11,7 @@ public class KeyFitLogic : MonoBehaviour
         realObject.parent = transform.parent;
 
         TravelAToB travelScript = realObject.gameObject.AddComponent<TravelAToB>();
-        travelScript.moveSpeed = 0.25f;
+        travelScript.moveSpeed = 0.6f;
         travelScript.Travel(transform);
         Destroy(gameObject);
     }

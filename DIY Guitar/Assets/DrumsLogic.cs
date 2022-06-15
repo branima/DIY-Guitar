@@ -25,6 +25,7 @@ public class DrumsLogic : MonoBehaviour
     public Transform drummingTransform;
     bool fitting;
     bool showcaseReady;
+    public ParticleSystem shineParticle;
 
     Material[] cinelaMats;
     Material drumBaseMat;
@@ -55,7 +56,7 @@ public class DrumsLogic : MonoBehaviour
         RaycastHit hit;
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-        if (Input.GetMouseButtonDown(0) && Physics.Raycast(ray, out hit))
+        if (Input.GetMouseButton(0) && Physics.Raycast(ray, out hit))
         {
             DrumPartFitLogic fitScript = hit.transform.GetComponent<DrumPartFitLogic>();
             if (fitScript != null)
@@ -71,19 +72,20 @@ public class DrumsLogic : MonoBehaviour
 
         if (showcaseReady)
         {
-            Invoke("Showcase", 0.75f);
+            GlobalProgressBarLogic.Instance.gameObject.SetActive(false);
+            shineParticle.Play();
+            Invoke("Showcase", 1.5f);
             fitting = false;
         }
     }
 
     public void Showcase()
     {
-        GlobalProgressBarLogic.Instance.gameObject.SetActive(false);
         CameraSwitch.Instance.ChangeCamera();
         GameObject playableDrummingSet = Instantiate(drumSetClone, drummingTransform.position, drummingTransform.rotation);
         Transform playingCustomer = gameManager.NextDrumsPlayingCustomer();
         playingCustomer.gameObject.SetActive(true);
-        StartCoroutine(NextCustomer(playingCustomer.gameObject, playableDrummingSet, 5f));
+        StartCoroutine(NextCustomer(playingCustomer.gameObject, playableDrummingSet, 4f));
     }
 
     public void CinelaPhase()

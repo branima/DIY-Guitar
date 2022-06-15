@@ -18,12 +18,15 @@ public class HoldAndDip : MonoBehaviour
     public Transform paintingTransform;
     public GameObject rimColorSelectionPanel;
 
+    public GameObject holdDownText;
+
     void Awake()
     {
         travel = true;
         warp = false;
         rotate = false;
         animator = GetComponent<Animator>();
+        holdDownText.SetActive(true);
     }
 
     // Update is called once per frame
@@ -59,6 +62,7 @@ public class HoldAndDip : MonoBehaviour
     public void DipOut()
     {
         CameraSwitch.Instance.ChangeCamera();
+        holdDownText.SetActive(false);
         travel = false;
         animator.enabled = true;
         Invoke("NextPhase", 3f);

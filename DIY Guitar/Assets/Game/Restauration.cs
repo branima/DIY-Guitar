@@ -158,7 +158,7 @@ public class Restauration : MonoBehaviour
                 GameObject customerOg = gameManager.GetCurrentCustomer();
                 customerOg.SetActive(false);
 
-                StartCoroutine(NextCustomer(playingCustomerRig.transform.parent.gameObject, 5f));
+                StartCoroutine(NextCustomer(playingCustomerRig.transform.parent.gameObject, 4f));
             }
             else
             {
@@ -173,6 +173,13 @@ public class Restauration : MonoBehaviour
         yield return new WaitForSeconds(waitTime);
 
         guitar.transform.parent = null;
+
+        GuitarAttributes ga = guitar.GetComponent<GuitarAttributes>();
+
+        guitar.transform.position = ga.GetCleaningPosition();
+        guitar.transform.rotation = Quaternion.Euler(ga.GetCleaningRotation());
+        guitar.transform.localScale = guitar.transform.localScale * ga.cleaningSize;
+
         Destroy(playingCustomer);
         foreach (GameObject pattern in patterns)
         {
