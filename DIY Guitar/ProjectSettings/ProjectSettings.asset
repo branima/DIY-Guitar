@@ -249,7 +249,7 @@ PlayerSettings:
   AndroidTargetArchitectures: -1
   AndroidSplashScreenScale: 0
   androidSplashScreen: {fileID: 0}
-  AndroidKeystoreName: C:/Users/Master/Desktop/Keystores/diyguitar.keystore
+  AndroidKeystoreName: C:/Users/Master/Desktop/Hyper/keystores/diyinstrument.keystore
   AndroidKeyaliasName: hyperzilla
   AndroidBuildApkPerCpuArchitecture: 0
   AndroidTVCompatibility: 0
@@ -272,7 +272,7 @@ PlayerSettings:
   - m_BuildTarget: 
     m_Icons:
     - serializedVersion: 2
-      m_Icon: {fileID: 2800000, guid: 37e9e93ca097f2844ba639757a369ea0, type: 3}
+      m_Icon: {fileID: 2800000, guid: e7f0c5befef715440ac6edb8314df06b, type: 3}
       m_Width: 128
       m_Height: 128
       m_Kind: 0
