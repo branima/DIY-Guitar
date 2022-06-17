@@ -148,7 +148,7 @@ public class DrumsLogic : MonoBehaviour
 
         gameManager.ShowcasePanel("drums", drums);
         CameraSwitch.Instance.ChangeCamera();
-        gameManager.GetCurrentCustomer().SetActive(false);
+        //gameManager.GetCurrentCustomer().SetActive(false);
         //gameManager.NextCustomer();
 
         Destroy(playingCustomer);

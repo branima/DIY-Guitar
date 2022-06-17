@@ -57,12 +57,17 @@ public class GameManager : MonoBehaviour
         guitarSegment.SetActive(false);
         drumsSegment.SetActive(false);
         pianoSegment.SetActive(false);
+
         if ((guitarPlayingCustomers.childCount > drumsPlayingCustomers.childCount) || (guitarPlayingCustomers.childCount > pianoPlayingCustomers.childCount))
             Destroy(guitarPlayingCustomers.GetChild(0).gameObject);
         if ((drumsPlayingCustomers.childCount > guitarPlayingCustomers.childCount) || (drumsPlayingCustomers.childCount > pianoPlayingCustomers.childCount))
             Destroy(drumsPlayingCustomers.GetChild(0).gameObject);
         if ((pianoPlayingCustomers.childCount > drumsPlayingCustomers.childCount) || (pianoPlayingCustomers.childCount > guitarPlayingCustomers.childCount))
             Destroy(pianoPlayingCustomers.GetChild(0).gameObject);
+
+        guitarRenderCamera.SetActive(false);
+        drumsRenderCamera.SetActive(false);
+        pianoRenderCamera.SetActive(false);
 
         if (customers.childCount > 0)
         {
@@ -157,5 +162,10 @@ public class GameManager : MonoBehaviour
     void LoadLevel(int levelIndex)
     {
         SceneManager.LoadScene(levelIndex);
+    }
+
+    public void DestroyCurrentCustomer()
+    {
+        Destroy(GetCurrentCustomer());
     }
 }

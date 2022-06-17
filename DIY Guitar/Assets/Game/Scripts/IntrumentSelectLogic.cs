@@ -18,20 +18,28 @@ public class IntrumentSelectLogic : MonoBehaviour
         {
             gameManager.BeginGuitar();
             gameObject.SetActive(false);
+            Invoke("DestroyCustomer", 0.5f);
         }
         else if (name == "drums")
         {
             gameManager.BeginDrums();
             gameObject.SetActive(false);
+            Invoke("DestroyCustomer", 0.5f);
         }
         else if (name == "keyboard")
         {
             gameManager.BeginKeyboard();
             gameObject.SetActive(false);
+            Invoke("DestroyCustomer", 0.5f);
         }
         else
         {
             Debug.Log("There is no instrument called " + name + ".");
         }
+    }
+
+    void DestroyCustomer()
+    {
+        gameManager.DestroyCurrentCustomer();
     }
 }

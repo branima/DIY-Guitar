@@ -155,8 +155,8 @@ public class Restauration : MonoBehaviour
                 guitar.transform.rotation = guitarPos.rotation;
                 guitar.transform.localScale = guitar.transform.localScale / ga.cleaningSize;
                 guitar.transform.parent = customer;
-                GameObject customerOg = gameManager.GetCurrentCustomer();
-                customerOg.SetActive(false);
+                //GameObject customerOg = gameManager.GetCurrentCustomer();
+                //customerOg.SetActive(false);
 
                 StartCoroutine(NextCustomer(playingCustomerRig.transform.parent.gameObject, 4f));
             }

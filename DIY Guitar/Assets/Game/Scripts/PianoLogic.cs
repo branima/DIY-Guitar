@@ -118,7 +118,7 @@ public class PianoLogic : MonoBehaviour
 
     public void Showcase()
     {
-        Destroy(gameManager.GetCurrentCustomer());
+        //Destroy(gameManager.GetCurrentCustomer());
         pianoShowcasePosition.SetActive(true);
         GlobalProgressBarLogic.Instance.gameObject.SetActive(false);
         CameraSwitch.Instance.ChangeCamera();
