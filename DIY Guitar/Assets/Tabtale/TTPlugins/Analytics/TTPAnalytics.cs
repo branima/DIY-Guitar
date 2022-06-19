@@ -3,7 +3,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.Scripting;
 #if UNITY_IOS
@@ -63,7 +62,7 @@ namespace Tabtale.TTPlugins
         /// reaction to pressing a button (or the background).</typeparam>
         /// <typeparam name="additionalParams">additional params</typeparam>
         public static event System.Action<string, string, IDictionary<string, object>> OnActionImageMessage;
-
+        
         public delegate int GetUserScoreDelegate();
 
         private static System.Action<string, Dictionary<string, object>> _onDecisionPointResponseAction;
@@ -117,6 +116,11 @@ namespace Tabtale.TTPlugins
         /// </summary>
         public static bool GetRemoteValue(string key, System.Action<string> onRequestValueResponseAction, double timeout = 4.0)
         {
+            if (!TTPCore.IsRemoteConfigExistAndEnabled())
+            {
+                Debug.Log("GetRemoteValue:: remoteconfig doesn't exist");
+                return false;
+            }
             if (Impl != null)
             {
                 _onRequestValueResponseAction = onRequestValueResponseAction;
@@ -158,6 +162,11 @@ namespace Tabtale.TTPlugins
         [Preserve]
         public static bool GetRemoteValueDictionary(IList<string> keys, System.Action<IDictionary<string, object>> onRequestValueDictionaryResponseAction, double timeout = 4.0)
         {
+            if (!TTPCore.IsRemoteConfigExistAndEnabled())
+            {
+                Debug.Log("GetRemoteValueDictionary:: remoteconfig doesn't exist");
+                return false;
+            }
             if (Impl != null)
             {
                 _onRequestValueDictionaryResponseAction = onRequestValueDictionaryResponseAction;
@@ -284,6 +293,7 @@ namespace Tabtale.TTPlugins
             if (_onDecisionPointResponseAction != null)
                 _onDecisionPointResponseAction.Invoke(decisionPoint, null);
         }
+        
         [Preserve]
         public static void LogTransaction(string transactionName,
                                           IDictionary<string, object> productsReceived,
@@ -312,7 +322,7 @@ namespace Tabtale.TTPlugins
                     }
                 }
 
-                Impl.LogEvent(AnalyticsTargets.ANALYTICS_TARGET_DELTA_DNA, "transaction", log, false, true);
+                Impl.LogEvent(AnalyticsTargets.ANALYTICS_TARGET_DELTA_DNA, TTPEvents.TRANSACTION, log, false, true);
             }
         }
 
@@ -321,6 +331,7 @@ namespace Tabtale.TTPlugins
         {
             return Impl.GetFirebaseInstanceId();
         }
+
         [Preserve]
         static Dictionary<string, object> OverrideCurrentConfig()
         {
@@ -341,6 +352,7 @@ namespace Tabtale.TTPlugins
         {
             _overrideConfig[key] = val;
         }
+        
         [Preserve]
         static void LevelUp(string skinName, string levelUpName, int level, Dictionary<string, object> additionalParams)
         {
@@ -362,10 +374,12 @@ namespace Tabtale.TTPlugins
                     }
                 }
 
-                Impl.LogEvent(AnalyticsTargets.ANALYTICS_TARGET_DELTA_DNA | AnalyticsTargets.ANALYTICS_TARGET_FIREBASE, "levelUp", eventParams, false, false);
+                Impl.LogEvent(AnalyticsTargets.ANALYTICS_TARGET_DELTA_DNA | AnalyticsTargets.ANALYTICS_TARGET_FIREBASE,
+                    TTPEvents.LEVEL_UP, eventParams, false, false);
             }
 
         }
+        
         // new API for mission logs
         [Preserve]
         static void LevelUpFirebase(int level, Dictionary<string, object> additionalParams)
@@ -387,9 +401,11 @@ namespace Tabtale.TTPlugins
                     }
                 }
 
-                Impl.LogEvent(AnalyticsTargets.ANALYTICS_TARGET_FIREBASE, "levelUp", eventParams, false, false);
+                Impl.LogEvent(AnalyticsTargets.ANALYTICS_TARGET_FIREBASE, 
+                    TTPEvents.LEVEL_UP, eventParams, false, false);
             }
         }
+        
         [Preserve]
         static void MissionStarted(string id, string name, string type, string missionStartedType, Dictionary<string, object> additionalParams)
         {
@@ -412,7 +428,8 @@ namespace Tabtale.TTPlugins
                     }
                 }
                 extras.Add("isTutorial", false);
-                Impl.LogEvent(AnalyticsTargets.ANALYTICS_TARGET_DELTA_DNA | AnalyticsTargets.ANALYTICS_TARGET_FIREBASE, "missionStarted", extras, false, false);
+                Impl.LogEvent(AnalyticsTargets.ANALYTICS_TARGET_DELTA_DNA | AnalyticsTargets.ANALYTICS_TARGET_FIREBASE,
+                    TTPEvents.MISSION_STARTED, extras, false, false);
             }
         }
 
@@ -445,9 +462,11 @@ namespace Tabtale.TTPlugins
                     }
                 }
                 extras.Add("isTutorial", false);
-                Impl.LogEvent(AnalyticsTargets.ANALYTICS_TARGET_FIREBASE, "missionStarted", extras, false, false);
+                Impl.LogEvent(AnalyticsTargets.ANALYTICS_TARGET_FIREBASE,
+                    TTPEvents.MISSION_STARTED, extras, false, false);
             }
         }
+        
         [Preserve]
         static void MissionComplete(string eventName, Dictionary<string, object> additionalParams)
         {
@@ -459,7 +478,8 @@ namespace Tabtale.TTPlugins
 					}
 				}
                 eventParams.Add("isTutorial", false);
-                Impl.LogEvent(AnalyticsTargets.ANALYTICS_TARGET_DELTA_DNA | AnalyticsTargets.ANALYTICS_TARGET_FIREBASE, eventName, eventParams, false, false);
+                Impl.LogEvent(AnalyticsTargets.ANALYTICS_TARGET_DELTA_DNA | AnalyticsTargets.ANALYTICS_TARGET_FIREBASE,
+                    eventName, eventParams, false, false);
                 List<string> keys = new List<string>
                 {
                     "missionID",
@@ -470,6 +490,7 @@ namespace Tabtale.TTPlugins
                 Impl.RemoveExtras(keys);
             }
         }
+        
         [Preserve]
         static void MissionCompleteFirebase(string eventName, Dictionary<string, object> additionalParams)
         {
@@ -494,6 +515,7 @@ namespace Tabtale.TTPlugins
                 Impl.RemoveExtras(keys);
             }
         }
+        
         [Preserve]
         static void TutorialStep(bool isMandatory, int tutorialStepID, string tutorialName, string tutorialStepName, Dictionary<string, object> additionalParams)
         {
@@ -515,16 +537,20 @@ namespace Tabtale.TTPlugins
                     }
                 }
 
-                Impl.LogEvent(AnalyticsTargets.ANALYTICS_TARGET_DELTA_DNA | AnalyticsTargets.ANALYTICS_TARGET_FIREBASE, "tutorialStep", itemDDNA, false, false);
+                Impl.LogEvent(AnalyticsTargets.ANALYTICS_TARGET_DELTA_DNA | AnalyticsTargets.ANALYTICS_TARGET_FIREBASE,
+                    TTPEvents.TUTORIAL_STEP, itemDDNA, false, false);
             }
         }
+        
         [Preserve]
         static void ReachedMainScreen(Dictionary<string, object> additionalParams)
         {
             if(Impl != null){
-                Impl.LogEvent(AnalyticsTargets.ANALYTICS_TARGET_DELTA_DNA | AnalyticsTargets.ANALYTICS_TARGET_FIREBASE, "mainScreen", additionalParams, false, false);
+                Impl.LogEvent(AnalyticsTargets.ANALYTICS_TARGET_DELTA_DNA | AnalyticsTargets.ANALYTICS_TARGET_FIREBASE,
+                    TTPEvents.MAIN_SCREEN, additionalParams, false, false);
             }
         }
+        
         [Preserve]
         static void ExcludeFromABTest(string decisionPoint)
         {
@@ -533,9 +559,11 @@ namespace Tabtale.TTPlugins
                 {
                     {"decisionPoint", decisionPoint}
                 };
-                Impl.LogEvent(AnalyticsTargets.ANALYTICS_TARGET_TT_ANALYTICS | AnalyticsTargets.ANALYTICS_TARGET_DELTA_DNA | AnalyticsTargets.ANALYTICS_TARGET_FIREBASE, "excludeFromABTest", extras, false, true);
+                Impl.LogEvent(AnalyticsTargets.ANALYTICS_TARGET_TT_ANALYTICS | AnalyticsTargets.ANALYTICS_TARGET_DELTA_DNA | AnalyticsTargets.ANALYTICS_TARGET_FIREBASE,
+                    TTPEvents.EXCLUDE_FROM_AB_TEST, extras, false, true);
             }
         }
+        
         [Preserve]
         private static void TriggerOnDeltaDnaReady(bool isReady, string userId)
         {
@@ -544,6 +572,7 @@ namespace Tabtale.TTPlugins
             if (OnDeltaDnaReadyEvent != null)
                 OnDeltaDnaReadyEvent(isReady);
         }
+        
         [Preserve]
         static void OnDecisionPointResponse(string decisionPoint, Dictionary<string, object> parameters)
         {
@@ -554,12 +583,14 @@ namespace Tabtale.TTPlugins
                 _onDecisionPointResponseAction = null;
             }
         }
+        
         [Preserve]
         private static void onImageMessageFetchCompleted(string decisionPoint, bool success, string error)
         {
             Debug.Log("TTPAnalytics::onImageMessageFetchCompleted: decisionPoint=" + decisionPoint);
             OnDidFetchCompleteForImageMessage.Invoke(decisionPoint, success, error);
         }
+        
         [Preserve]
         private static void onImageMessageDismissed(string decisionPoint)
         {
@@ -569,6 +600,7 @@ namespace Tabtale.TTPlugins
                 OnDismissImageMessage(decisionPoint);
             }
         }
+        
         [Preserve]
         private static void onImageMessageAction(string decisionPoint, string action, Dictionary<string, object> parameters)
         {
@@ -706,7 +738,6 @@ namespace Tabtale.TTPlugins
                 return ttpGetRemoteDictionary(keys != null ? TTPJson.Serialize(keys): "[]", timeoutInSecs);
             }
 
-
             public void AddExtras(IDictionary<string, object> extras)
             {
                 ttpAddExtras(extras != null ? TTPJson.Serialize(extras) : "{}");
@@ -769,7 +800,7 @@ namespace Tabtale.TTPlugins
                         _serivceJavaObject = ((TTPCore.ITTPCoreInternal)TTPCore.Impl).GetServiceJavaObject(SERVICE_GET_METHOD);
                     }
                     if (_serivceJavaObject == null)
-                        Debug.LogError("TTPAnalytics::AndroidImpl: failed to get privacy settings native instance.");
+                        Debug.LogError("TTPAnalytics::AndroidImpl: failed to get analytics native instance.");
                     return _serivceJavaObject;
                 }
             }
@@ -829,8 +860,7 @@ namespace Tabtale.TTPlugins
                 }
                 return "";
             }
-
-
+            
             public bool GetRemoteDictionary(IList<string> keys, double timeoutInSecs)
             {
                 if (ServiceJavaObject != null)
@@ -1035,8 +1065,7 @@ namespace Tabtale.TTPlugins
                     }
                 }
             }
-
-
+            
             public void onRemoteValueProviderReady(string messageStr)
             {
                 Debug.Log("TTPAnalytics::AnalyticsDelegate::onEngagementProviderReady: " + messageStr);

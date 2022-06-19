@@ -40,7 +40,7 @@ namespace Tabtale.TTPlugins
             }
             else
             {
-                LogPopUpEvent("rateUsButton", false, true, "NA");
+                LogPopUpEvent(TTPEvents.RATE_US_BUTTON, false, true, "NA");
                 InformNoInternet();
             }
 
@@ -67,7 +67,7 @@ namespace Tabtale.TTPlugins
         static void SuggestRateUs()
         {
             Debug.Log("TTPRateUs::SuggestRateUs:");
-            LogPopUpEvent("rateUsPopup", true, false, "NA");
+            LogPopUpEvent(TTPEvents.RATE_US_POPUP, true, false, "NA");
             if (Application.platform == RuntimePlatform.IPhonePlayer)
             {
 #if UNITY_IOS && !TTP_DEV_MODE
@@ -77,31 +77,15 @@ namespace Tabtale.TTPlugins
             else
             {
 #if UNITY_ANDROID
-                var activityCls = new AndroidJavaClass("com.tabtale.ttplugins.ttpunity.TTPUnityMainActivity");
-                if (activityCls != null)
+                var serviceManager = ((TTPCore.ITTPCoreInternal)TTPCore.Impl).GetServiceManager();
+                if (serviceManager != null)
                 {
-                    var activityObject = activityCls.CallStatic<AndroidJavaObject>("getActivityInstance");
-                    if (activityObject != null)
-                    {
-                        var serviceManager = activityObject.Call<AndroidJavaObject>("getServiceManager");
-                        if (serviceManager != null)
-                        {
-                            serviceManager.Call("ShowInAppReview");
-                            Debug.Log("GoToRate:: show inapp review");
-                        }
-                        else
-                        {
-                            Debug.Log("GoToRate:: could not find service manager");
-                        }
-                    }
-                    else
-                    {
-                        Debug.Log("GoToRate:: could not find main activity");
-                    }
-                } 
+                    serviceManager.Call("ShowInAppReview");
+                    Debug.Log("GoToRate:: show inapp review");
+                }
                 else
                 {
-                    Debug.Log("GoToRate:: could not create TTPUnityMainActivity");
+                    Debug.Log("GoToRate:: could not find service manager");
                 }
 #endif
             }
@@ -147,7 +131,7 @@ namespace Tabtale.TTPlugins
         private static void GoToRateFromButton()
         {
             Debug.Log("TTPRateUs::GoToRateFromButton:");
-            LogPopUpEvent("rateUsButton", true, false, "rate");
+            LogPopUpEvent(TTPEvents.RATE_US_BUTTON, true, false, "rate");
             GoToRate();
         }
 
@@ -187,14 +171,14 @@ namespace Tabtale.TTPlugins
             Debug.Log("TTPRateUs::ShouldSuggestRateUs:");
             if (!TTPCore.IsConnectedToTheInternet())
             {
-                LogPopUpEvent("rateUsPopup", false, true, "NA");
+                LogPopUpEvent(TTPEvents.RATE_US_POPUP, false, true, "NA");
                 Debug.Log("TTPRateUs::ShouldSuggestRateUs: not connected to the internet. will not show.");
                 return false;
             }
 #if TTP_POPUPMGR        
             if(!TTPPopupMgr.ShouldShow("RateUs"))
             {
-                LogPopUpEvent("rateUsPopup", false, false, "NA");
+                LogPopUpEvent(TTPEvents.RATE_US_POPUP, false, false, "NA");
                 Debug.Log("TTPRateUs::ShouldSuggestRateUs: PopupMgr return false. will not show.");
                 return false;
             }

@@ -29,11 +29,6 @@ public class GuitarSpawner : MonoBehaviour
         currIdx = 0;
     }
 
-    void OnEnable()
-    {
-        //ResetClones();
-    }
-
     public void SelectGuitar(int idx)
     {
         guitarClones[currIdx].SetActive(false);
@@ -45,6 +40,7 @@ public class GuitarSpawner : MonoBehaviour
 
     public void ConfirmSelection()
     {
+        nextButton.SetActive(false);
         SpawnGuitar(guitarClones[currIdx]);
 
         GameObject guitar = guitars[currIdx];

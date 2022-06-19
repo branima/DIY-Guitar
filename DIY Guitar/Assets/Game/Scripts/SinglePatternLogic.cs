@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using PaintIn3D;
 
 public class SinglePatternLogic : MonoBehaviour
 {
@@ -41,17 +42,21 @@ public class SinglePatternLogic : MonoBehaviour
                 nextInChain = null;
             }
             if (transform.position == ogPosition)
+            {
+                GetComponentInChildren<P3dPaintableTexture>().Clear();
                 gameObject.SetActive(false);
+            }
         }
     }
 
     public void Travel()
     {
-        if (targetPosition == ogPosition)
+        if (targetPosition == ogPosition){
             targetPosition = finalPosition;
-        else
+        }
+        else{
             targetPosition = ogPosition;
-
+        }
         travel = true;
     }
 }

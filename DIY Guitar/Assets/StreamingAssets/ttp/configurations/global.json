@@ -1,17 +1,1 @@
-{
-  "store": "apple",
-  "gameEngine": "unity",
-  "audienceModeBuildOnly": "non-children",
-  "orientation": "portrait",
-  "geoLocationServer": "ttplugins.ttpsdk.info",
-  "appId": "1619755312",
-  "bundleId": "com.Hyperzilla.DIYGuitar",
-  "testMode": false,
-  "askForTracking": true,
-  "isAdMob": true,
-  "appBuildConfig": {
-    "admob": {
-      "application": ""
-    }
-  }
-}
+{"store":"google","gameEngine":"unity","audienceModeBuildOnly":"non-children","orientation":"portrait","geoLocationServer":"ttplugins.ttpsdk.info","appId":"","bundleId":"com.Hyperzilla.DIYGuitar","testMode":false,"askForTracking":false,"isAdMob":true,"appBuildConfig":{"admob":{"application":""}}}

@@ -83,6 +83,7 @@ public class Restauration : MonoBehaviour
 
     public void NextPhase()
     {
+        //Debug.Log(activePattern);
         if (phase == 1 && activePattern != null && activePattern.nextInChain != null)
         {
             activePattern.Travel();
@@ -100,6 +101,7 @@ public class Restauration : MonoBehaviour
             sprayCan.SetActive(false);
             if (activePattern != null)
                 activePattern.Travel();
+            activePattern = null;
             phase++;
         }
         if (phase == 2)

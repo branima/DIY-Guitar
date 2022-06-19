@@ -10,6 +10,14 @@ namespace Tabtale.TTPlugins
 
         public const string AssetBundlesOutputPath = "AssetBundles";
 
+        public static void Copy(string sourceDirectory, string targetDirectory)
+        {
+            DirectoryInfo diSource = new DirectoryInfo(sourceDirectory);
+            DirectoryInfo diTarget = new DirectoryInfo(targetDirectory);
+
+            CopyAll(diSource, diTarget);
+        }
+        
         public static string ReadStreamingAssetsFile(string fileRelativePath)
         {
             byte[] data = ReadDataFromStreamingAssets(fileRelativePath);

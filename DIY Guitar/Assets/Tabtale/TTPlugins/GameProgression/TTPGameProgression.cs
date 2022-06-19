@@ -152,7 +152,8 @@ namespace Tabtale.TTPlugins
                 Debug.LogWarning("DDNAEventsMissionComplete used from GameProgression plugin");
 
                 AppsFlyerLevelComplete(additionalParams);
-                CallAnalyticsByReflection("MissionComplete", new object[] { "missionCompleted", additionalParams });
+                CallAnalyticsByReflection("MissionComplete",
+                    new object[] { TTPEvents.MISSION_COMPLETED, additionalParams });
             }
 
             /// <summary>
@@ -162,7 +163,8 @@ namespace Tabtale.TTPlugins
             public static void MissionAbandoned(Dictionary<string, object> additionalParams)
             {
                 Debug.LogWarning("DDNAEventsMissionAbandoned used from GameProgression plugin");
-                CallAnalyticsByReflection("MissionComplete", new object[] { "missionAbandoned", additionalParams });
+                CallAnalyticsByReflection("MissionComplete",
+                    new object[] { TTPEvents.MISSION_ABANDONED, additionalParams });
             }
 
             /// <summary>
@@ -172,7 +174,8 @@ namespace Tabtale.TTPlugins
             public static void MissionFailed(Dictionary<string, object> additionalParams)
             {
                 Debug.LogWarning("DDNAEvents:MissionFailed used from GameProgression plugin");
-                CallAnalyticsByReflection("MissionComplete", new object[] { "missionFailed", additionalParams });
+                CallAnalyticsByReflection("MissionComplete",
+                    new object[] { TTPEvents.MISSION_FAILED, additionalParams });
             }
 
             /// <summary>
@@ -218,7 +221,8 @@ namespace Tabtale.TTPlugins
                 Debug.LogWarning("FirebaseEvents:MissionComplete:");
 
                 AppsFlyerLevelComplete(additionalParams);
-                CallAnalyticsByReflection("MissionCompleteFirebase", new object[] { "missionCompleted", additionalParams });
+                CallAnalyticsByReflection("MissionCompleteFirebase",
+                    new object[] { TTPEvents.MISSION_COMPLETED, additionalParams });
             }
 
             /// <summary>
@@ -228,7 +232,8 @@ namespace Tabtale.TTPlugins
             public static void MissionAbandoned(Dictionary<string, object> additionalParams)
             {
                 Debug.LogWarning("FirebaseEvents: MissionAbandoned:");
-                CallAnalyticsByReflection("MissionCompleteFirebase", new object[] { "missionAbandoned", additionalParams });
+                CallAnalyticsByReflection("MissionCompleteFirebase",
+                    new object[] { TTPEvents.MISSION_ABANDONED, additionalParams });
             }
 
             /// <summary>
@@ -238,7 +243,8 @@ namespace Tabtale.TTPlugins
             public static void MissionFailed(Dictionary<string, object> additionalParams)
             {
                 Debug.LogWarning("FirebaseEvents:MissionFailed:");
-                CallAnalyticsByReflection("MissionCompleteFirebase", new object[] { "missionFailed", additionalParams });
+                CallAnalyticsByReflection("MissionCompleteFirebase",
+                    new object[] { TTPEvents.MISSION_FAILED, additionalParams });
             }
 
             public static void LevelUp(int level, Dictionary<string, object> additionalParams)

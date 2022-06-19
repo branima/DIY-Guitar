@@ -176,7 +176,10 @@ namespace Tabtale.TTPlugins {
                 NotifyOpenAdsFinished();
 #endif
 #if TTP_ANALYTICS && TTP_DEV_MODE
-                NotifyOnRemoteFetchCompletedEvent();
+                if (!IsRemoteConfigExistAndEnabled())
+                {
+                    NotifyOnRemoteFetchCompletedEvent();
+                }
 #endif
                 _initialized = true;
             }
@@ -185,6 +188,30 @@ namespace Tabtale.TTPlugins {
                 Debug.LogWarning("TTPCore::Setup:: was called already in this lifecycle.");
             }
         }
+        
+#if TTP_ANALYTICS
+        private static void NotifyOnRemoteFetchCompletedEvent()
+        {
+            Debug.Log("TTPCore::NotifyOnRemoteFetchCompletedEvent:");
+            System.Type analytics = System.Type.GetType("Tabtale.TTPlugins.TTPAnalytics");
+            if (analytics != null)
+            {
+                MethodInfo method = analytics.GetMethod("NotifyOnRemoteFetchCompletedEvent", BindingFlags.NonPublic | BindingFlags.Static);
+                if (method != null)
+                {
+                    method.Invoke(null, new object[] { false });
+                }
+                else
+                {
+                    Debug.LogWarning("TTPCore::NotifyOpenAdsFinished: method NotifyOnRemoteFetchCompletedEvent not found");
+                }
+            }
+            else
+            {
+                Debug.Log("TTPCore::NotifyOpenAdsFinished: TTPAnalytics not found");
+            }
+        }
+#endif
 
 #if TTP_OPENADS && TTP_DEV_MODE
         private static void NotifyOpenAdsFinished()
@@ -460,7 +487,8 @@ namespace Tabtale.TTPlugins {
             "Tabtale.TTPlugins.TTPDeltaDnaAgent+DeltaDnaAgentDelegate",
             "Tabtale.TTPlugins.TTPOpenAds+OpenAdsDelegate",
             "Tabtale.TTPlugins.TTPRewardedInterstitials+RewardedInterstitialsDelegate",
-            "Tabtale.TTPlugins.ATTDisclaimer+DisclaimerDelegate"
+            "Tabtale.TTPlugins.ATTDisclaimer+DisclaimerDelegate",
+            "Tabtale.TTPlugins.TTPFirebaseEchoAgent"
         };
 
         private interface ITTPCore {
@@ -478,6 +506,7 @@ namespace Tabtale.TTPlugins {
 #if UNITY_ANDROID
 			AndroidJavaObject GetServiceJavaObject(string serviceClassPath);
             AndroidJavaObject GetCurrentActivity();
+            AndroidJavaObject GetServiceManager();
 #endif
 #if UNITY_IOS
             void CallCrash();
@@ -611,7 +640,7 @@ namespace Tabtale.TTPlugins {
 		private class AndroidImpl : ITTPCore, ITTPCoreInternal, ITTPInternalService {
 
 			private AndroidJavaObject _serviceManager;
-            private AndroidJavaObject _activityObject;
+            private AndroidJavaObject _communicationObject;
 
             private AndroidJavaObject ServiceManager
             {
@@ -619,10 +648,10 @@ namespace Tabtale.TTPlugins {
                 {
                     if (_serviceManager == null)
                     {
-                        if (_activityObject != null)
-                            _serviceManager = _activityObject.Call<AndroidJavaObject>("getServiceManager");
+                        if (_communicationObject != null)
+                            _serviceManager = _communicationObject.Call<AndroidJavaObject>("getServiceManager");
                         else
-                            Debug.LogError("TTPCore::AndroidImpl:GetServiceJavaObject could not get instance of TTPUnityMainActivity.");
+                            Debug.LogError("TTPCore::AndroidImpl:GetServiceJavaObject could not get instance of TTPCommunicationInterface.");
                     }
                     if(_serviceManager == null)
                         Debug.LogError("TTPCore::AndroidImpl:GetServiceJavaObject could not get instance of native android service manager.");
@@ -632,14 +661,13 @@ namespace Tabtale.TTPlugins {
 
 			public AndroidImpl() {
                 Debug.Log("TTPCore::AndroidImpl created");
-                AndroidJavaClass activityCls = new AndroidJavaClass("com.tabtale.ttplugins.ttpunity.TTPUnityMainActivity");
-				if(activityCls != null){
-                    _activityObject = activityCls.CallStatic<AndroidJavaObject>("getActivityInstance");
-				}
-				else {
-					Debug.LogError("TTPCore::AndroidImpl: could not find class of native android service manager.");
-				}
-			}
+                AndroidJavaClass communicationInterface = new AndroidJavaClass("com.tabtale.ttplugins.ttpcore.TTPCommunicationInterface");
+                _communicationObject = communicationInterface.CallStatic<AndroidJavaObject>("getInstance");
+                if (_communicationObject == null)
+                {
+                    Debug.LogError("TTPCore::AndroidImpl: could not find class of native android service manager.");
+                }
+            }
 
 			public AndroidJavaObject GetServiceJavaObject(string serviceGetMethod) {
                 if(ServiceManager != null)
@@ -649,11 +677,15 @@ namespace Tabtale.TTPlugins {
                 return null;
 			}
 
+			public AndroidJavaObject GetServiceManager() {
+                return ServiceManager;
+			}
+
             public void Setup()
             {
                 Debug.Log("TTPCore::AndroidImpl::Setup");
-                if (_activityObject != null){
-                    _activityObject.Call("setup");
+                if (_communicationObject != null){
+                    _communicationObject.Call("setup");
                 }
                 else {
                     Debug.LogError("TTPCore::AndroidImpl:Setup could not get instance of TTPUnityMainActivity.");
@@ -662,9 +694,9 @@ namespace Tabtale.TTPlugins {
 
             public string GetPackageInfo()
             {
-                if (_activityObject != null)
+                if (_communicationObject != null)
                 {
-                    return _activityObject.Call<string>("getPackageInfo");
+                    return _communicationObject.Call<string>("getPackageInfo");
                 }
                 else
                 {
@@ -675,6 +707,7 @@ namespace Tabtale.TTPlugins {
 
             public bool OnBackPressed()
             {
+                Debug.Log("TTPCore::AndroidImpl:OnBackPressed");
                 bool rateUsHandledBackPress = false;
                 bool nativeHandledBackPress = false;
                 System.Type rateUsClsType = System.Type.GetType("Tabtale.TTPlugins.TTPRateUs");
@@ -712,7 +745,12 @@ namespace Tabtale.TTPlugins {
 
             public AndroidJavaObject GetCurrentActivity()
             {
-                return _activityObject;
+                if (ServiceManager != null)
+                {
+                    AndroidJavaObject ttpActivity = ServiceManager.Call<AndroidJavaObject>("getActivity");
+                    return ttpActivity;
+                }
+                return null;
             }
 
             public bool IsConnectedToTheInternet()
@@ -798,6 +836,7 @@ namespace Tabtale.TTPlugins {
             }
 #if UNITY_ANDROID
             public AndroidJavaObject GetServiceJavaObject(string serviceClassPath) { return null;}
+            public AndroidJavaObject GetServiceManager() { return null; }
 #endif
 #if UNITY_IOS
             public void CallCrash()
@@ -1007,11 +1046,11 @@ namespace Tabtale.TTPlugins {
             public void OnRemoteConfigUpdate(string message)
             {
                 Debug.Log("CoreDelegate::OnRemoteConfigUpdate:message=" + message);
-                Dictionary<string, object> remoteConfig = TTPJson.Deserialize(message) as Dictionary<string, object>;
-                if (OnRemoteConfigUpdateEvent != null)
-                {
-                    OnRemoteConfigUpdateEvent(remoteConfig);
-                }
+                if(OnRemoteConfigUpdateEvent == null) return;
+                if(string.IsNullOrEmpty(message)) return;
+                var remoteConfig = TTPJson.Deserialize(message) as Dictionary<string, object>;
+                OnRemoteConfigUpdateEvent(remoteConfig);
+                
             }
             
             public void OnPopupShown(string message)

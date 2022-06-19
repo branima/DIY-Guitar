@@ -2,6 +2,20 @@
   <!-- Android dependencies are specified under the "androidPackages" element.
        Each "androidPackage" element contains the attributes of an Android
        dependency (e.g AAR, JAR reference). -->
+  <androidPackages>
+    <repositories>
+      <repository>https://s3.amazonaws.com/com.tabtale.repo/android/maven/backup</repository>
+      <repository>https://s3.amazonaws.com/com.tabtale.repo/android/maven/ttplugins</repository>
+      <repository>https://s3.amazonaws.com/com.tabtale.repo/android/maven/thirdparty</repository>
+      <repository>https://s3.amazonaws.com/moat-sdk-builds</repository>
+      <repository>https://maven.ogury.co</repository>
+      <repository>https://android-sdk.is.com</repository>
+      <repository>https://dl-maven-android.mintegral.com/repository/mbridge_android_sdk_oversea</repository>
+      <repository>https://jitpack.io</repository>
+      <repository>https://mvnrepository.com/artifact/com.inmobi.monetization/inmobi-ads</repository>
+      <repository>https://artifact.bytedance.com/repository/pangle</repository>
+    </repositories>
+  </androidPackages>
   <!-- iOS Cocoapod dependencies can be specified by each iosPod element. -->
   <iosPods>
     <!-- Global set of sources to search for Cocoapods.

@@ -128,6 +128,15 @@ extern "C" {
         return strdup("");
     }
     
+    void ttpSetFirebaseInstanceId(const char* firebaseInstanceId)
+    {
+        TTPServiceManager *serviceManager = [TTPUnityServiceManager sharedInstance];
+        id<TTPIanalytics> analyticsService = [serviceManager get:@protocol(TTPIanalytics)];
+        if(analyticsService != nil){
+            [analyticsService setFirebaseInstanceId:[[NSString alloc] initWithUTF8String:firebaseInstanceId]];
+        }
+    }
+    
     const char * ttpGetCurrentConfig()
     {
         TTPServiceManager *serviceManager = [TTPUnityServiceManager sharedInstance];

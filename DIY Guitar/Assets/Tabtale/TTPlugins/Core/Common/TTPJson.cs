@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Text;
 using UnityEngine;
@@ -266,12 +267,12 @@ namespace Tabtale.TTPlugins
                 if (number.IndexOf('.') == -1)
                 {
                     long parsedInt;
-                    System.Int64.TryParse(number, out parsedInt);
+                    Int64.TryParse(number, NumberStyles.Any, CultureInfo.InvariantCulture, out parsedInt);
                     return parsedInt;
                 }
 
                 double parsedDouble;
-                System.Double.TryParse(number, out parsedDouble);
+                Double.TryParse(number, NumberStyles.Any, CultureInfo.InvariantCulture, out parsedDouble);
                 return parsedDouble;
             }
 

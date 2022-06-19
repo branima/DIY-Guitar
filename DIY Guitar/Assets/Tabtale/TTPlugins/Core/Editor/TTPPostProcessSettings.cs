@@ -91,10 +91,13 @@ namespace Tabtale.TTPlugins
             plist.ReadFromFile(plistPath);
             rootDict = plist.root;
 
-            rootDict.SetBoolean("GOOGLE_ANALYTICS_DEFAULT_ALLOW_AD_PERSONALIZATION_SIGNALS", false);
-            rootDict.SetBoolean("FIREBASE_ANALYTICS_COLLECTION_ENABLED", false);
+            if (ShouldBlockFirebaseAnalytics())
+            {
+                rootDict.SetBoolean("GOOGLE_ANALYTICS_DEFAULT_ALLOW_AD_PERSONALIZATION_SIGNALS", false);
+                rootDict.SetBoolean("FIREBASE_ANALYTICS_COLLECTION_ENABLED", false);
+            }
             rootDict.SetBoolean("CADisableMinimumFrameDurationOnPhone", true);
-            
+
             // Add AppLovinSdkKey
             if (Application.identifier == "com.tabtaleint.ttplugins" ||
                 Application.identifier == "com.tabtaleint.ttplugins" ||
@@ -265,6 +268,20 @@ namespace Tabtale.TTPlugins
             string newContent = mainContent.Replace("#include <UnityFramework/UnityFramework.h>", @"#include ""../UnityFramework/UnityFramework.h""");
             File.WriteAllText(mainAppPath, newContent);
 #endif
+        }
+
+        private static bool ShouldBlockFirebaseAnalytics()
+        {
+            var analyticsConfigurationJson = ((TTPCore.ITTPCoreInternal)TTPCore.Impl).GetConfigurationJson("analytics");
+            if (!string.IsNullOrEmpty(analyticsConfigurationJson))
+            {
+                var analyticsConfig = TTPJson.Deserialize(analyticsConfigurationJson) as Dictionary<string, object>;
+                if (analyticsConfig != null && analyticsConfig.ContainsKey("firebaseEchoMode") && (bool)analyticsConfig["firebaseEchoMode"])
+                {
+                    return false;
+                }
+            }
+            return true;
         }
 
         private static string GetTargetGUID(PBXProject proj)
