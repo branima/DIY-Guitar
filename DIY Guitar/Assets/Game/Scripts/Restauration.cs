@@ -36,6 +36,8 @@ public class Restauration : MonoBehaviour
     public GameObject showcasePanel;
     GameObject playingCustomerRig;
 
+    public Transform guitarPlayingPosition;
+
     int phase; /// 1 - Spraying, 2 - Pattern, 3 - Stickers, 4 - Final Decorations, 5 - Showcase
 
     bool patternDeployed;
@@ -148,7 +150,8 @@ public class Restauration : MonoBehaviour
                 GuitarAttributes ga = guitar.GetComponent<GuitarAttributes>();
                 ga.ResetBrushesAndProps();
 
-                playingCustomerRig = gameManager.NextGuitarPlayingCustomer().GetChild(0).gameObject;
+                playingCustomerRig = gameManager.NextPlayingCustomer().GetChild(0).gameObject;
+                playingCustomerRig.transform.parent.position = guitarPlayingPosition.position;
                 playingCustomerRig.transform.parent.gameObject.SetActive(true);
                 //Debug.Log(playingCustomerRig.name);
                 Transform guitarPos = playingCustomerRig.transform.GetChild(0);

@@ -31,6 +31,8 @@ public class DrumsLogic : MonoBehaviour
     Material drumBaseMat;
     Material drumRimMat;
 
+    public Transform drumPlayingPosition;
+
     void OnEnable()
     {
         if (drumSetClone != null)
@@ -83,7 +85,9 @@ public class DrumsLogic : MonoBehaviour
     {
         CameraSwitch.Instance.ChangeCamera();
         GameObject playableDrummingSet = Instantiate(drumSetClone, drummingTransform.position, drummingTransform.rotation);
-        Transform playingCustomer = gameManager.NextDrumsPlayingCustomer();
+        Transform playingCustomer = gameManager.NextPlayingCustomer();
+        playingCustomer.position = drumPlayingPosition.position;
+        playingCustomer.rotation = drumPlayingPosition.rotation;
         playingCustomer.gameObject.SetActive(true);
         StartCoroutine(NextCustomer(playingCustomer.gameObject, playableDrummingSet, 4f));
     }

@@ -6,19 +6,17 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
 
+    public CustomerSpawn spawnScript;
+
     int numberOfLevels = 2;
 
     public Transform customers;
     GameObject currCustomer;
+    GameObject currPlayingCustomer;
 
     public Transform guitarPlayingCustomers;
-    GameObject currGuitarPlayingCustomer;
-
     public Transform drumsPlayingCustomers;
-    GameObject currDrumsPlayingCustomer;
-
     public Transform pianoPlayingCustomers;
-    GameObject currPianoPlayingCustomer;
 
     public GameObject tapToPlayMessage;
 
@@ -45,6 +43,7 @@ public class GameManager : MonoBehaviour
         NextCustomer();
     }
 
+
     public void NextCustomer()
     {
         showcasePanel.SetActive(false);
@@ -58,45 +57,17 @@ public class GameManager : MonoBehaviour
         drumsSegment.SetActive(false);
         pianoSegment.SetActive(false);
 
-        if ((guitarPlayingCustomers.childCount > drumsPlayingCustomers.childCount) || (guitarPlayingCustomers.childCount > pianoPlayingCustomers.childCount))
-            Destroy(guitarPlayingCustomers.GetChild(0).gameObject);
-        if ((drumsPlayingCustomers.childCount > guitarPlayingCustomers.childCount) || (drumsPlayingCustomers.childCount > pianoPlayingCustomers.childCount))
-            Destroy(drumsPlayingCustomers.GetChild(0).gameObject);
-        if ((pianoPlayingCustomers.childCount > drumsPlayingCustomers.childCount) || (pianoPlayingCustomers.childCount > guitarPlayingCustomers.childCount))
-            Destroy(pianoPlayingCustomers.GetChild(0).gameObject);
+        currCustomer = spawnScript.SpawnNext();
+        currCustomer.GetComponent<MoveForOrder>().Travel();
 
         guitarRenderCamera.SetActive(false);
         drumsRenderCamera.SetActive(false);
         pianoRenderCamera.SetActive(false);
-
-        if (customers.childCount > 0)
-        {
-            currCustomer = customers.GetChild(0).gameObject;
-            currCustomer.transform.parent = null;
-            currCustomer.SetActive(true);
-            currCustomer.GetComponent<MoveForOrder>().Travel();
-        }
     }
 
-    public Transform NextGuitarPlayingCustomer()
+    public Transform NextPlayingCustomer()
     {
-        currGuitarPlayingCustomer = guitarPlayingCustomers.GetChild(0).gameObject;
-        currGuitarPlayingCustomer.transform.parent = null;
-        return currGuitarPlayingCustomer.transform;
-    }
-
-    public Transform NextDrumsPlayingCustomer()
-    {
-        currDrumsPlayingCustomer = drumsPlayingCustomers.GetChild(0).gameObject;
-        currDrumsPlayingCustomer.transform.parent = null;
-        return currDrumsPlayingCustomer.transform;
-    }
-
-    public Transform NextPianoPlayingCustomer()
-    {
-        currPianoPlayingCustomer = pianoPlayingCustomers.GetChild(0).gameObject;
-        currPianoPlayingCustomer.transform.parent = null;
-        return currPianoPlayingCustomer.transform;
+        return currPlayingCustomer.transform;
     }
 
     public void EnableTapToPlayMessage()
@@ -164,8 +135,16 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene(levelIndex);
     }
 
-    public void DestroyCurrentCustomer()
+    public void DestroyCurrentCustomer(string instrumentName)
     {
+        if (instrumentName == "guitar")
+            currPlayingCustomer = currCustomer.transform.GetChild(currCustomer.transform.childCount - 1).GetChild(0).gameObject;
+        else if (instrumentName == "drums")
+            currPlayingCustomer = currCustomer.transform.GetChild(currCustomer.transform.childCount - 1).GetChild(1).gameObject;
+        else if (instrumentName == "keyboard")
+            currPlayingCustomer = currCustomer.transform.GetChild(currCustomer.transform.childCount - 1).GetChild(2).gameObject;
+
+        currPlayingCustomer.transform.parent = null;
         Destroy(GetCurrentCustomer());
     }
 }

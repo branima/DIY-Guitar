@@ -46,6 +46,8 @@ public class PianoLogic : MonoBehaviour
 
     public ParticleSystem shineParticles;
 
+    public Transform pianoPlayingPosition;
+
     // Start is called before the first frame update
     void OnEnable()
     {
@@ -122,7 +124,9 @@ public class PianoLogic : MonoBehaviour
         pianoShowcasePosition.SetActive(true);
         GlobalProgressBarLogic.Instance.gameObject.SetActive(false);
         CameraSwitch.Instance.ChangeCamera();
-        Transform playingCustomer = gameManager.NextPianoPlayingCustomer();
+        Transform playingCustomer = gameManager.NextPlayingCustomer();
+        playingCustomer.position = pianoPlayingPosition.position;
+        playingCustomer.rotation = pianoPlayingPosition.rotation;
         playingCustomer.gameObject.SetActive(true);
 
         paintablePianoClone.transform.position = pianoShowcasePosition.transform.GetChild(0).position;

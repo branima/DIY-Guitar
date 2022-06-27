@@ -6,6 +6,7 @@ public class IntrumentSelectLogic : MonoBehaviour
 {
 
     GameManager gameManager;
+    string chosenInstrument;
 
     void Awake()
     {
@@ -14,6 +15,7 @@ public class IntrumentSelectLogic : MonoBehaviour
 
     public void SelectInstrument(string name)
     {
+        chosenInstrument = name;
         if (name == "guitar")
         {
             gameManager.BeginGuitar();
@@ -40,6 +42,6 @@ public class IntrumentSelectLogic : MonoBehaviour
 
     void DestroyCustomer()
     {
-        gameManager.DestroyCurrentCustomer();
+        gameManager.DestroyCurrentCustomer(chosenInstrument);
     }
 }
