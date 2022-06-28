@@ -81,13 +81,16 @@ public class Restauration : MonoBehaviour
         paintingBrush.SetActive(true);
         sprayCan.SetActive(true);
         activePattern = spl;
+        patternDeployed = true;
+        //Debug.Log("Ime transforma sa skriptom: ");
+        //Debug.Log(spl.transform.name);
     }
 
     public void NextPhase()
     {
-        //Debug.Log(activePattern);
         if (phase == 1 && activePattern != null && activePattern.nextInChain != null)
         {
+            //Debug.Log(phase + ", " + activePattern.transform.name + ", " + activePattern.nextInChain.transform.name);
             activePattern.Travel();
             activePattern = activePattern.nextInChain;
             return;
@@ -112,10 +115,6 @@ public class Restauration : MonoBehaviour
             sprayPanel.SetActive(false);
             sprayCan.SetActive(false);
             patternPanel.SetActive(true);
-            if (activePattern != null)
-                activePattern.Travel();
-            activePattern = null;
-            patternDeployed = true;
         }
         else if (phase == 3)
         {

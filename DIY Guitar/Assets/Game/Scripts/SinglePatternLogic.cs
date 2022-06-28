@@ -15,6 +15,8 @@ public class SinglePatternLogic : MonoBehaviour
 
     public SinglePatternLogic nextInChain;
 
+    public GameObject peel;
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -51,12 +53,29 @@ public class SinglePatternLogic : MonoBehaviour
 
     public void Travel()
     {
-        if (targetPosition == ogPosition){
+        //Debug.Log(transform.name);
+        //Debug.Log(peel != null && !peel.activeSelf && transform.position == ogPosition);
+        if (peel != null && !peel.activeSelf && transform.position == ogPosition)
+        {
+            transform.GetChild(0).gameObject.SetActive(false);
             targetPosition = finalPosition;
+            transform.position = finalPosition;
+            peel.SetActive(true);
         }
-        else{
-            targetPosition = ogPosition;
+        else
+        {
+
+            if (targetPosition == ogPosition)
+            {
+                //Debug.Log("Putujem 1");
+                targetPosition = finalPosition;
+            }
+            else
+            {
+                //Debug.Log("Putujem 2");
+                targetPosition = ogPosition;
+            }
+            travel = true;
         }
-        travel = true;
     }
 }
