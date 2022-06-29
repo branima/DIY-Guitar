@@ -12,4 +12,8 @@ public class PeelLogic : MonoBehaviour
         realPattern.SetActive(true);
         gameObject.SetActive(false);
     }
+
+    public void PeelOutLogic(){
+        gameObject.SetActive(false);
+    }
 }

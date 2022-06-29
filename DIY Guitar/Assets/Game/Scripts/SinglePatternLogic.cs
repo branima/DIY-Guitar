@@ -16,6 +16,7 @@ public class SinglePatternLogic : MonoBehaviour
     public SinglePatternLogic nextInChain;
 
     public GameObject peel;
+    public GameObject peelOf;
 
     // Start is called before the first frame update
     void Awake()
@@ -53,28 +54,36 @@ public class SinglePatternLogic : MonoBehaviour
 
     public void Travel()
     {
-        //Debug.Log(transform.name);
-        //Debug.Log(peel != null && !peel.activeSelf && transform.position == ogPosition);
-        if (peel != null && !peel.activeSelf && transform.position == ogPosition)
+
+        if (targetPosition == ogPosition)
         {
-            transform.GetChild(0).gameObject.SetActive(false);
+            //Debug.Log("Putujem 1");
             targetPosition = finalPosition;
-            transform.position = finalPosition;
-            peel.SetActive(true);
         }
         else
         {
+            //Debug.Log("Putujem 2");
+            targetPosition = ogPosition;
+        }
 
-            if (targetPosition == ogPosition)
+        //Debug.Log(transform.name);
+        //Debug.Log(peel != null && !peel.activeSelf && transform.position == ogPosition);
+        if (peel != null && !peel.activeSelf)
+        {
+            transform.GetChild(0).gameObject.SetActive(false);
+            transform.position = targetPosition;
+            if (transform.position == finalPosition)
             {
-                //Debug.Log("Putujem 1");
-                targetPosition = finalPosition;
+                peel.SetActive(true);
             }
             else
             {
-                //Debug.Log("Putujem 2");
-                targetPosition = ogPosition;
+                peelOf.GetComponent<SkinnedMeshRenderer>().material = transform.GetComponent<MeshRenderer>().material;
+                peelOf.SetActive(true);
             }
+        }
+        else
+        {
             travel = true;
         }
     }
