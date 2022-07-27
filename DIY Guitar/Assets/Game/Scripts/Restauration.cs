@@ -12,6 +12,18 @@ public class Restauration : MonoBehaviour
 
     public bool videoAdMode;
 
+    public bool controlledSmash;
+    public GameObject breakableGuitar;
+    public Transform guitarSmashPosition;
+
+    public bool customerSmash;
+    public GameObject smashingCustomer;
+    public Transform holdingPosition;
+    public GameObject amp;
+
+    public bool firstPersonSmash;
+
+
     public Transform cameraPositions;
 
     public GameObject paintingBrush;
@@ -143,26 +155,79 @@ public class Restauration : MonoBehaviour
             GlobalProgressBarLogic.Instance.gameObject.SetActive(false);
             if (!videoAdMode)
             {
-                finalDecorPanel.SetActive(false);
-                CameraSwitch.Instance.ChangeCamera();
+                if (controlledSmash)
+                {
+                    finalDecorPanel.SetActive(false);
+                    CameraSwitch.Instance.ChangeCamera();
 
-                GuitarAttributes ga = guitar.GetComponent<GuitarAttributes>();
-                ga.ResetBrushesAndProps();
+                    GuitarAttributes ga = guitar.GetComponent<GuitarAttributes>();
+                    ga.ResetBrushesAndProps();
 
-                playingCustomerRig = gameManager.NextPlayingCustomer().GetChild(0).gameObject;
-                playingCustomerRig.transform.parent.position = guitarPlayingPosition.position;
-                playingCustomerRig.transform.parent.gameObject.SetActive(true);
-                //Debug.Log(playingCustomerRig.name);
-                Transform guitarPos = playingCustomerRig.transform.GetChild(0);
-                Transform customer = playingCustomerRig.transform;
-                guitar.transform.position = guitarPos.position;
-                guitar.transform.rotation = guitarPos.rotation;
-                guitar.transform.localScale = guitar.transform.localScale / ga.cleaningSize;
-                guitar.transform.parent = customer;
-                //GameObject customerOg = gameManager.GetCurrentCustomer();
-                //customerOg.SetActive(false);
+                    breakableGuitar.SetActive(true);
+                    Transform guitarPos = guitarSmashPosition;
+                    guitar.transform.parent = guitarPos.parent;
+                    guitar.transform.position = guitarPos.position;
+                    guitar.transform.rotation = guitarPos.rotation;
+                    guitar.transform.localScale = guitar.transform.localScale / ga.cleaningSize;
 
-                StartCoroutine(NextCustomer(playingCustomerRig.transform.parent.gameObject, 4f));
+
+                }
+                else if (customerSmash)
+                {
+                    finalDecorPanel.SetActive(false);
+                    CameraSwitch.Instance.ChangeCamera();
+
+                    GuitarAttributes ga = guitar.GetComponent<GuitarAttributes>();
+                    ga.ResetBrushesAndProps();
+
+                    amp.SetActive(true);
+                    smashingCustomer.SetActive(true);
+                    Transform guitarPos = guitarSmashPosition;
+                    guitar.transform.parent = guitarPos.parent;
+                    guitar.transform.position = guitarPos.position;
+                    guitar.transform.rotation = guitarPos.rotation;
+                    guitar.transform.localScale = guitar.transform.localScale / ga.cleaningSize;
+                }
+                else if (firstPersonSmash)
+                {
+                    finalDecorPanel.SetActive(false);
+                    CameraSwitch.Instance.ChangeCamera();
+
+                    GuitarAttributes ga = guitar.GetComponent<GuitarAttributes>();
+                    ga.ResetBrushesAndProps();
+
+                    amp.SetActive(true);
+                    smashingCustomer.SetActive(true);
+                    Transform guitarPos = guitarSmashPosition;
+                    guitar.transform.parent = guitarPos.parent;
+                    guitar.transform.position = guitarPos.position;
+                    guitar.transform.rotation = guitarPos.rotation;
+                    guitar.transform.localScale = guitar.transform.localScale / ga.cleaningSize;
+                }
+                else
+                {
+                    finalDecorPanel.SetActive(false);
+                    CameraSwitch.Instance.ChangeCamera();
+
+
+                    GuitarAttributes ga = guitar.GetComponent<GuitarAttributes>();
+                    ga.ResetBrushesAndProps();
+
+                    playingCustomerRig = gameManager.NextPlayingCustomer().GetChild(0).gameObject;
+                    playingCustomerRig.transform.parent.position = guitarPlayingPosition.position;
+                    playingCustomerRig.transform.parent.gameObject.SetActive(true);
+                    //Debug.Log(playingCustomerRig.name);
+                    Transform guitarPos = playingCustomerRig.transform.GetChild(0);
+                    Transform customer = playingCustomerRig.transform;
+                    guitar.transform.position = guitarPos.position;
+                    guitar.transform.rotation = guitarPos.rotation;
+                    guitar.transform.localScale = guitar.transform.localScale / ga.cleaningSize;
+                    guitar.transform.parent = customer;
+                    //GameObject customerOg = gameManager.GetCurrentCustomer();
+                    //customerOg.SetActive(false);
+
+                    //StartCoroutine(NextCustomer(playingCustomerRig.transform.parent.gameObject, 4f));
+                }
             }
             else
             {
