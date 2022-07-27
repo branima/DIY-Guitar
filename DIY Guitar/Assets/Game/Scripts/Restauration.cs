@@ -9,6 +9,7 @@ public class Restauration : MonoBehaviour
 {
 
     GameManager gameManager;
+    Camera cam;
 
     public bool videoAdMode;
 
@@ -22,7 +23,7 @@ public class Restauration : MonoBehaviour
     public GameObject amp;
 
     public bool firstPersonSmash;
-
+    public Transform fpsCameraPos;
 
     public Transform cameraPositions;
 
@@ -58,6 +59,7 @@ public class Restauration : MonoBehaviour
     void Awake()
     {
         gameManager = GetComponent<GameManager>();
+        cam = Camera.main;
         phase = 0;
         activePattern = null;
         patternDeployed = false;
@@ -191,7 +193,11 @@ public class Restauration : MonoBehaviour
                 else if (firstPersonSmash)
                 {
                     finalDecorPanel.SetActive(false);
-                    CameraSwitch.Instance.ChangeCamera();
+                    Debug.Log("tu sam");
+                    cam.transform.parent = fpsCameraPos.parent;
+                    cam.transform.position = fpsCameraPos.position;
+                    cam.transform.rotation = fpsCameraPos.rotation;
+                    Debug.Log("jedem govna");
 
                     GuitarAttributes ga = guitar.GetComponent<GuitarAttributes>();
                     ga.ResetBrushesAndProps();
